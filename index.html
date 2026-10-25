@@ -437,7 +437,7 @@ body.reduced-motion *,body.reduced-motion *:before,body.reduced-motion *:after{a
 <div class="field"><label>Cooling strategies that helped (optional)</label><input id="heatStrategies" placeholder="cooling vest,cold drinks, afternoon rest, fan ect.."></div>
 <button class="btn primary" onclick="saveHeat()">Save heat check-in</button>
 <div id="heatHistory" style="margin-top:12px"></div>
-<div class="notice" style="margin-bottom:0">💡 Heat tips: pre cool before any activitys, stay hydrated, plan around cooler hours, and consult your care team about your cooling options.</div></div>
+<div class="notice" style="margin-bottom:0">💡 Heat tips: pre cool before any activitys, stay hydrated, plan activities around cooler hours, and consult your care team about your cooling options.</div></div>
 <div class="card rise rise-1"><div class="card-title"><div><h3>💉 Injection site rotation</h3><small>If you self inject a DMT -disease modifying therapy rotating spots protects your skin. Tap a site to log where you injected.MSpace highlights your least recently used area.</small></div></div>
 <div style="display:flex;flex-wrap:wrap;gap:20px">
 <div><b style="font-size:12px;color:var(--muted)">ABDOMEN</b><div style="display:flex;gap:8px;margin-top:6px"><div class="site-dot" data-site="Abdomen L-outer" onclick="logSite(this)">L</div><div class="site-dot" data-site="Abdomen L-inner" onclick="logSite(this)">L</div><div class="site-dot" data-site="Abdomen R-inner" onclick="logSite(this)">R</div><div class="site-dot" data-site="Abdomen R-outer" onclick="logSite(this)">R</div></div></div>
@@ -609,8 +609,7 @@ function saveDB() {
   localStorage.setItem(key, JSON.stringify(db));
   renderAll();
 
-  // Update the server whenever medication or calendar data changes.
-  // Foreground reminders still work if the server is unavailable.
+  
   syncRemindersToServer();
 }
 function esc(s=''){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
@@ -759,7 +758,7 @@ function renderCalendarReminders() {
     .filter(e => !Number.isNaN(e._when.getTime()))
     .sort((a, b) => a._when - b._when);
 
-  // Completed events should no longer appear in reminders.
+  
   const pending = timed.filter(
     e => e.status !== 'Done' && !e.done
   );
@@ -866,12 +865,11 @@ async function showMSpaceNotification(title, body, tag) {
 }
 
 function checkReminders() {
-  // Refresh in-app reminders; no browser pop-up needed.
   renderDueToday();
   renderCalendarReminders();
 }
 
-// Refresh reminders every 15 seconds while the page is open.
+
 if (!window.mspaceReminderTimer) {
   window.mspaceReminderTimer = setInterval(
     checkReminders,
@@ -879,7 +877,7 @@ if (!window.mspaceReminderTimer) {
   );
 }
 
-// Check every 15 seconds while the page is open.
+
 if (!window.mspaceReminderTimer) {
   window.mspaceReminderTimer = setInterval(checkReminders, 15000);
 }
@@ -891,7 +889,7 @@ function renderMeds(){$('medListCount').textContent=db.meds.length+' saved';$('m
 function notifLabel() {
   const status = $('notifStatus');
 
-  // The notification status element may not exist in this version.
+  
   if (!status) return;
 
   if (!('Notification' in window)) {
@@ -1304,8 +1302,7 @@ function downloadReport(){if(!reportText)buildReport();downloadBlob('mspace-heal
 function downloadCSV(){let rows=[['date','time','energy','fatigue','mood','sleep','context','mobility','notes']];[...db.logs].sort((a,b)=>a.date.localeCompare(b.date)).forEach(l=>rows.push([l.date,l.time,l.energy,l.fatigue,l.mood,l.sleep,l.context,l.mobility,(l.notes||'').replace(/[\n,]/g,' ')]));downloadBlob('mspace-checkins.csv',rows.map(r=>r.join(',')).join('\n'),'text/csv');toast('CSV downloaded — opens in Excel or Sheets.')}
 function downloadBlob(name,data,type){let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([data],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
 
-function fillDoctorSummary(){
-let logs=[...db.logs].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,5);let summary=logs.length?logs.map(l=>`${l.date} (${l.time}): energy ${l.energy}/10, fatigue ${l.fatigue}/10, mood ${l.mood}, context ${l.context}${l.notes?'; notes: '+l.notes:''}`).join('\n'):'No symptom check-ins have been logged yet.';let vision=db.visions.length?'\n\nRecent vision changes:\n'+db.visions.slice(-5).reverse().map(v=>`${v.date}: ${v.eye} eye — ${v.symptom}; severity ${v.severity??'not rated'}/10; trend ${v.trend||'not recorded'}; reported change ${v.change||'not recorded'}; onset ${v.onset||'not recorded'}${v.notes?'; notes: '+v.notes:''}`).join('\n'):'\n\nNo vision entries logged.';let gameRows=(db.gameHistory||[]).slice(-8).reverse().map(x=>`${x.date.slice(0,10)}: ${x.label} — ${x.score} ${x.unit}`).join('\n');let testRows=(db.functionalTests||[]).slice(-8).reverse().map(x=>`${x.date.slice(0,10)}: ${x.type==='peg'?'Nine-Hole Peg Test':'Timed 25-Foot Walk'} — ${x.seconds}s`).join('\n');let performance='\n\nRecent game results:\n'+(gameRows||'No brain-game sessions logged.')+'\n\nRecent timed tests:\n'+(testRows||'No timed-test results logged.');let rel=db.relapses.length?`\n\nMost recent flare record:\n${db.relapses[db.relapses.length-1].date}: ${db.relapses[db.relapses.length-1].symptoms} — ${db.relapses[db.relapses.length-1].duration}, trigger: ${db.relapses[db.relapses.length-1].trigger}`:'';$('doctorMessage').value=`Hello${$('doctorName').value.trim()?' '+$('doctorName').value.trim():''},\n\nI would like to discuss: ${$('doctorTopic').value}.\n\nRecent self-reported check-ins:\n${summary}${vision}${performance}${rel}\n\nMy questions/concerns:\n\nThank you,`;toast('Recent log summary inserted. Please review it.')}
+function fillDoctorSummary(){let logs=[...db.logs].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,5);let summary=logs.length?logs.map(l=>`${l.date} (${l.time}): energy ${l.energy}/10, fatigue ${l.fatigue}/10, mood ${l.mood}, context ${l.context}${l.notes?'; notes: '+l.notes:''}`).join('\n'):'No symptom check-ins have been logged yet.';let vision=db.visions.length?'\n\nRecent vision changes:\n'+db.visions.slice(-5).reverse().map(v=>`${v.date}: ${v.eye} eye — ${v.symptom}; severity ${v.severity??'not rated'}/10; trend ${v.trend||'not recorded'}; reported change ${v.change||'not recorded'}; onset ${v.onset||'not recorded'}${v.notes?'; notes: '+v.notes:''}`).join('\n'):'\n\nNo vision entries logged.';let gameRows=(db.gameHistory||[]).slice(-8).reverse().map(x=>`${x.date.slice(0,10)}: ${x.label} — ${x.score} ${x.unit}`).join('\n');let testRows=(db.functionalTests||[]).slice(-8).reverse().map(x=>`${x.date.slice(0,10)}: ${x.type==='peg'?'Nine-Hole Peg Test':'Timed 25-Foot Walk'} — ${x.seconds}s`).join('\n');let performance='\n\nRecent game results:\n'+(gameRows||'No brain-game sessions logged.')+'\n\nRecent timed tests:\n'+(testRows||'No timed-test results logged.');let rel=db.relapses.length?`\n\nMost recent flare record:\n${db.relapses[db.relapses.length-1].date}: ${db.relapses[db.relapses.length-1].symptoms} — ${db.relapses[db.relapses.length-1].duration}, trigger: ${db.relapses[db.relapses.length-1].trigger}`:'';$('doctorMessage').value=`Hello${$('doctorName').value.trim()?' '+$('doctorName').value.trim():''},\n\nI would like to discuss: ${$('doctorTopic').value}.\n\nRecent self-reported check-ins:\n${summary}${vision}${performance}${rel}\n\nMy questions/concerns:\n\nThank you,`;toast('Recent log summary inserted. Please review it.')}
 
 $('doctorForm').addEventListener('submit',e=>{e.preventDefault();let email=$('doctorEmail').value.trim()||$('savedDoctorEmail').value.trim();if(!email){toast('Add your clinician email first.');$('doctorEmail').focus();return}let subject=$('doctorSubject').value||'MS symptom update';let body=$('doctorMessage').value||`Hello${$('doctorName').value?' '+$('doctorName').value:''},\n\nI would like to discuss ${$('doctorTopic').value.toLowerCase()} with you.\n\nThank you.`;window.location.href=`mailto:${encodeURIComponent(email)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;toast('Your email app should open with a draft. Check it before sending.')});
 $('questionForm').addEventListener('submit',e=>{e.preventDefault();db.questions.push({id:Date.now(),text:$('questionText').value.trim(),done:false});$('questionText').value='';saveDB();toast('Question saved.')});
