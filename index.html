@@ -1,0 +1,1390 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MSpace-Your health in your hands</title>
+<style>
+:root{--orange:#f0692a;--orange2:#ff9b61;--orange-soft:#ffc9a8;--peach:#fff0e7;--ink:#2b2926;--muted:#857d77;--line:#efe4dd;--bg:#fffaf7;--card:#ffffff;--green:#2f8f6e;--blue:#5b8def;--purple:#9a6cc9;--red:#c74b38;--shadow:0 10px 30px rgba(116,64,27,.08);--shadow-lg:0 18px 45px rgba(116,64,27,.14);--radius:18px;--ring:#f0692a33}
+[data-theme="dark"]{--peach:#3c2b20;--ink:#f0eae4;--muted:#a79d94;--line:#3b3532;--bg:#191614;--card:#242019;--shadow:0 10px 30px rgba(0,0,0,.35);--shadow-lg:0 18px 45px rgba(0,0,0,.5);--ring:#f0692a44}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;transition:background .35s,color .35s;overflow-x:hidden}
+button,input,select,textarea{font:inherit}button{cursor:pointer;border:0;transition:transform .18s,box-shadow .18s,background .18s,color .18s}button:active{transform:scale(.97)}
+::-webkit-scrollbar{width:9px;height:9px}::-webkit-scrollbar-thumb{background:#d9c6ba;border-radius:9px}[data-theme="dark"] ::-webkit-scrollbar-thumb{background:#4a413a}
+a{color:var(--orange);text-decoration:none}a:hover{text-decoration:underline}
+.app{min-height:100vh;display:grid;grid-template-columns:256px 1fr}
+
+.sidebar{background:var(--card);border-right:1px solid var(--line);padding:26px 16px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;gap:24px;z-index:30;overflow-y:auto;transition:background .35s,border .35s}
+.brand{display:flex;gap:11px;align-items:center;padding:0 10px}
+.logo{width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,var(--orange),#ffb27f);color:#fff;display:grid;place-items:center;font-size:22px;box-shadow:0 7px 18px #f0692a44;animation:logoFloat 5s ease-in-out infinite}
+@keyframes logoFloat{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-3px) rotate(3deg)}}
+.brand b{font-size:19px;letter-spacing:-.7px}.brand small{display:block;color:var(--muted);font-size:10.5px;letter-spacing:1.7px;text-transform:uppercase}
+.navlabel{padding:0 12px;color:var(--muted);font-size:10px;letter-spacing:1.6px;font-weight:800}
+.nav{display:grid;gap:5px}
+.nav button{display:flex;align-items:center;gap:12px;padding:11px 13px;background:transparent;color:var(--muted);text-align:left;border-radius:12px;font-weight:650;font-size:13.5px;position:relative;overflow:hidden;transition:all .25s cubic-bezier(.22,.9,.3,1)}
+.nav button .ico{font-size:17px;width:23px;text-align:center}
+.nav button:hover{background:var(--peach);color:var(--orange);transform:translateX(5px)}
+.nav button.active{background:linear-gradient(115deg,var(--orange),var(--orange2));color:#fff;box-shadow:0 6px 16px #f0692a38;transform:translateX(3px)}
+.side-note{margin-top:auto;background:linear-gradient(145deg,var(--peach),transparent);border:1px solid var(--line);padding:16px;border-radius:16px;animation:pulseCard 6s ease-in-out infinite}
+@keyframes pulseCard{0%,100%{transform:scale(1)}50%{transform:scale(1.01)}}
+.side-note .sun{font-size:23px;animation:sunSpin 12s linear infinite;display:inline-block}
+@keyframes sunSpin{to{transform:rotate(360deg)}}
+.side-note b{display:block;margin:6px 0}.side-note p{font-size:12px;color:var(--muted);margin:0 0 12px}
+
+.main{min-width:0;padding:26px clamp(16px,3vw,42px) 60px;max-width:1600px;width:100%;margin:auto}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:26px;flex-wrap:wrap}
+.eyebrow{font-size:11px;letter-spacing:1.7px;text-transform:uppercase;color:var(--orange);font-weight:800}
+.topbar h1{font-size:clamp(24px,2.8vw,33px);letter-spacing:-1.2px;margin:4px 0 0;line-height:1.18}
+.top-actions{display:flex;gap:9px;align-items:center}
+.iconbtn{background:var(--card);border:1px solid var(--line);border-radius:12px;width:42px;height:42px;font-size:17px;color:var(--ink);display:grid;place-items:center;transition:all .2s ease}
+.iconbtn:hover{border-color:var(--orange);color:var(--orange);transform:translateY(-3px) rotate(6deg);box-shadow:var(--shadow)}
+.avatar{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#ffd9c2,var(--peach));color:#a84b1d;display:grid;place-items:center;font-weight:800;border:2px solid var(--orange-soft);animation:avatarPulse 4s ease-in-out infinite}
+@keyframes avatarPulse{0%,100%{box-shadow:0 0 0 0 rgba(240,105,42,.2)}50%{box-shadow:0 0 0 6px rgba(240,105,42,0)}}
+[data-theme="dark"] .avatar{color:#ffb27f}
+.page{display:none}
+.page.active{display:block;animation:pageIn .5s cubic-bezier(.22,.9,.3,1) forwards}
+@keyframes pageIn{from{opacity:0;transform:translateY(18px) scale(.99)}to{opacity:1;transform:translateY(0) scale(1)}}
+.rise{animation:pageIn .55s cubic-bezier(.22,.9,.3,1) both}
+.rise-1{animation-delay:.06s}.rise-2{animation-delay:.14s}.rise-3{animation-delay:.22s}.rise-4{animation-delay:.3s}
+@keyframes popIn{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:scale(1)}}
+.hero{position:relative;overflow:hidden;border-radius:24px;padding:30px 32px;color:#fff;display:flex;justify-content:space-between;align-items:center;gap:20px;box-shadow:var(--shadow-lg);isolation:isolate}
+.hero.orange{background:linear-gradient(115deg,#e85f1f,#ff9f66,#e85f1f);background-size:200% 200%;animation:heroFlow 9s ease infinite}
+.hero.green{background:linear-gradient(115deg,#2c7f63,#5fae8f,#2c7f63);background-size:200% 200%;animation:heroFlow 9s ease infinite}
+.hero.purple{background:linear-gradient(115deg,#8b5cb8,#c58bd0,#8b5cb8);background-size:200% 200%;animation:heroFlow 9s ease infinite}
+@keyframes heroFlow{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+.hero:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 80% 20%,#ffffff2a,transparent 55%);z-index:-1}
+.hero:after{content:"";position:absolute;width:280px;height:280px;border:1px solid #ffffff38;border-radius:50%;right:7%;top:-150px;box-shadow:0 0 0 35px #ffffff10,0 0 0 72px #ffffff0c;animation:ringPulse 7s ease-in-out infinite}
+@keyframes ringPulse{0%,100%{transform:scale(1);opacity:.9}50%{transform:scale(1.15);opacity:.4}}
+.hero>*{position:relative;z-index:1}
+.hero h2{font-size:clamp(21px,2.8vw,30px);letter-spacing:-.8px;margin:7px 0}
+.hero p{margin:0;color:#fff6f0;max-width:560px}
+.hero .hero-art{font-size:62px;filter:drop-shadow(0 8px 12px rgba(0,0,0,.2));padding:0 22px;animation:artFloat 5s ease-in-out infinite}
+@keyframes artFloat{0%,100%{transform:translateY(0) rotate(-3deg) scale(1)}50%{transform:translateY(-10px) rotate(4deg) scale(1.05)}}
+
+.btn{padding:11px 17px;border-radius:12px;font-weight:750;font-size:13.5px;display:inline-flex;align-items:center;gap:7px;transition:all .2s cubic-bezier(.22,.9,.3,1)}
+.btn.primary{background:linear-gradient(115deg,var(--orange),#ff8b4d);color:#fff;box-shadow:0 6px 16px #f0692a36}
+.btn.primary:hover{transform:translateY(-3px);box-shadow:0 12px 24px #f0692a55}
+.btn.white{background:#fff;color:#c45621;margin-top:16px}
+.btn.white:hover{background:#fff8f5;transform:translateY(-2px)}
+.btn.soft{background:var(--peach);color:#bd511c}
+.btn.soft:hover{background:var(--orange-soft);transform:translateY(-2px)}
+[data-theme="dark"] .btn.soft{background:#4a3020;color:#ffb27f}
+.btn.ghost{background:var(--card);border:1px solid var(--line);color:var(--ink)}
+.btn.ghost:hover{border-color:var(--orange);color:var(--orange);transform:translateY(-2px);box-shadow:var(--shadow)}
+.btn.small{padding:8px 12px;font-size:12px}
+.btn.danger{background:#fdeceb;color:var(--red)}
+[data-theme="dark"] .btn.danger{background:#47241f}
+
+.section-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:28px 0 14px;flex-wrap:wrap}
+.section-head h3{margin:0;font-size:18px;letter-spacing:-.4px}.section-head p{margin:3px 0 0;color:var(--muted);font-size:12px}
+.grid{display:grid;gap:16px}
+.stats{grid-template-columns:repeat(4,minmax(0,1fr));margin-top:18px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:19px;box-shadow:var(--shadow);min-width:0;transition:transform .25s cubic-bezier(.22,.9,.3,1),box-shadow .25s cubic-bezier(.22,.9,.3,1),border-color .25s,background .35s}
+.card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);border-color:var(--orange-soft)}
+.stat-top{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:12px;font-weight:650}
+.stat-icon{width:35px;height:35px;border-radius:11px;background:var(--peach);display:grid;place-items:center;font-size:17px;transition:transform .3s}
+.card:hover .stat-icon{transform:scale(1.1) rotate(5deg)}
+.stat-number{font-size:29px;font-weight:800;letter-spacing:-1px;margin:9px 0 0}
+.stat-foot{font-size:11px;color:var(--muted)}.stat-foot em{color:var(--green);font-style:normal;font-weight:700}
+.two-col{grid-template-columns:minmax(0,1.3fr) minmax(280px,.8fr)}
+.three-col{grid-template-columns:repeat(3,minmax(0,1fr))}
+.card-title{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px}
+.card-title h3{font-size:15px;margin:0}.card-title small{color:var(--muted)}
+.chart{width:100%;height:165px;display:block}
+.legend{display:flex;gap:15px;color:var(--muted);font-size:11px}
+.dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--orange);margin-right:5px}
+.quick-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.quick{background:var(--bg);border:1px solid var(--line);padding:15px;border-radius:15px;text-align:left;color:var(--ink);transition:all .2s ease}
+.quick:hover{border-color:var(--orange-soft);transform:translateY(-3px);box-shadow:var(--shadow);background:var(--card)}
+.quick span{font-size:21px;display:inline-block;transition:transform .2s}.quick:hover span{transform:scale(1.2)}
+.quick b{display:block;font-size:13px;margin-top:7px}.quick small{color:var(--muted);font-size:11px}
+
+.task{display:flex;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+.task:last-child{border-bottom:0}
+.check{width:22px;height:22px;border:1.5px solid #e3d4cb;border-radius:7px;display:grid;place-items:center;background:var(--card);color:#fff;flex-shrink:0;transition:all .2s ease}
+[data-theme="dark"] .check{border-color:#5a5049}
+.check.done{background:var(--green);border-color:var(--green);animation:popIn .25s cubic-bezier(.22,.9,.3,1)}
+.task b{font-size:13px;display:block}.task small{color:var(--muted);font-size:11px}
+.task .task-end{margin-left:auto}
+.pill{display:inline-flex;align-items:center;gap:5px;background:var(--peach);color:#bd511c;border-radius:30px;padding:5px 10px;font-size:10px;font-weight:800}
+.pill.green{background:#e5f6ee;color:#23775c}.pill.gray{background:#f1ece8;color:#80746d}.pill.blue{background:#e8f0fd;color:#3a66b0}.pill.purple{background:#f2eafb;color:#7a4fb0}
+[data-theme="dark"] .pill.green{background:#1e3a2e;color:#7fd6ad}[data-theme="dark"] .pill.gray{background:#38322d;color:#b5a89e}[data-theme="dark"] .pill.blue{background:#22304a;color:#8fb3f0}[data-theme="dark"] .pill.purple{background:#33253f;color:#c49ae8}
+.field{display:grid;gap:6px;margin:12px 0}
+.field label{font-size:12px;font-weight:750;color:var(--muted)}
+.field input,.field select,.field textarea{width:100%;border:1px solid var(--line);background:var(--bg);border-radius:11px;padding:11px 12px;outline:none;color:var(--ink);transition:border .2s,box-shadow .2s}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--orange);box-shadow:0 0 0 3px var(--ring)}
+.field textarea{min-height:86px;resize:vertical}
+.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 14px}
+.full{grid-column:1/-1}
+.range-row{display:flex;gap:10px;align-items:center}
+.range-row input{padding:0;accent-color:var(--orange)}
+.range-num{font-weight:800;color:var(--orange);min-width:26px;text-align:right}
+.notice{padding:12px 14px;border-radius:12px;background:var(--peach);color:#86512f;font-size:12px;margin:12px 0}
+[data-theme="dark"] .notice{color:#ffb27f}
+.progress{height:7px;border-radius:9px;background:var(--line);overflow:hidden}
+.progress span{display:block;height:100%;background:linear-gradient(90deg,var(--orange),#ffb17e);border-radius:9px;transition:width .5s cubic-bezier(.22,.9,.3,1)}
+.tagrow{display:flex;gap:7px;flex-wrap:wrap}
+.tag{padding:7px 11px;border:1px solid var(--line);border-radius:30px;background:var(--card);font-size:11px;color:var(--muted);transition:all .2s ease}
+.tag:hover{border-color:var(--orange-soft);color:var(--orange);transform:translateY(-1px)}
+.tag.active{background:var(--peach);border-color:var(--orange-soft);color:#b74d19;font-weight:700}
+.resource{padding:16px;border:1px solid var(--line);border-radius:15px;background:var(--card);transition:transform .25s cubic-bezier(.22,.9,.3,1),box-shadow .25s cubic-bezier(.22,.9,.3,1)}
+.resource:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);border-color:var(--orange-soft)}
+.resource b{font-size:13px}.resource p{font-size:12px;color:var(--muted);margin:6px 0 10px}
+.action-link{color:#c85a23;font-weight:750;background:none;padding:0;font-size:12px}
+.action-link:hover{text-decoration:underline}
+
+.calendar-layout{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(260px,.8fr);gap:16px}
+.cal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}
+.cal-head h3{margin:0;font-size:16px}
+.cal-head button{background:var(--peach);border-radius:9px;padding:7px 12px;color:#bb531e;font-weight:800;transition:all .2s}
+.cal-head button:hover{background:var(--orange-soft)}
+.cal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}
+.weekday{text-align:center;color:var(--muted);font-size:10px;font-weight:800;padding:7px 0}
+.day{min-height:64px;border:1px solid var(--line);border-radius:11px;background:var(--card);padding:7px 3px;display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--ink);transition:all .2s ease}
+.day:hover{border-color:var(--orange-soft);transform:translateY(-3px);box-shadow:var(--shadow)}
+.day.muted{opacity:.35}.day.today{border-color:var(--orange);background:var(--peach)}
+.day.selected{background:linear-gradient(115deg,var(--orange),var(--orange2));color:#fff;border-color:var(--orange);box-shadow:0 5px 14px #f0692a3d}
+.day .n{font-size:12px;font-weight:750}.day .marks{display:flex;gap:3px;flex-wrap:wrap;justify-content:center;min-height:5px}
+.mark{width:6px;height:6px;border-radius:50%;display:inline-block;flex:0 0 6px;border:1px solid rgba(0,0,0,.12)}
+.delete-history{font-size:11px;padding:5px 8px;border:1px solid var(--line);border-radius:8px;background:transparent;color:var(--red);font-weight:750}
+.delete-history:hover{background:var(--peach)}
+.calendar-legend{display:flex;gap:13px;flex-wrap:wrap;color:var(--muted);font-size:11px;margin-top:13px}
+.event{padding:12px;border:1px solid var(--line);border-radius:12px;margin:9px 0;display:flex;gap:10px;align-items:flex-start;background:var(--card);transition:all .2s ease}
+.event:hover{border-color:var(--orange-soft);box-shadow:var(--shadow)}
+.event .eventicon{background:var(--peach);border-radius:10px;padding:8px}
+.event b{display:block;font-size:12px}.event small{color:var(--muted)}
+.empty{color:var(--muted);font-size:13px;padding:16px 4px}
+
+.symptoms{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.symptom-item{border:1px solid var(--line);border-radius:14px;padding:13px;background:var(--bg);transition:all .2s ease}
+.symptom-item label{display:flex;justify-content:space-between;font-size:12px;font-weight:750}
+.symptom-item input{width:100%;accent-color:var(--orange);margin:12px 0 5px}
+.symptom-item small{color:var(--muted)}
+.symptom-item.hot{background:linear-gradient(145deg,#fff5ef,#ffe8d9);border-color:#ffb98a}
+[data-theme="dark"] .symptom-item.hot{background:#3d2718;border-color:#7a4a28}
+.table-wrap{overflow:auto}
+table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;padding:12px 9px;border-bottom:1px solid var(--line);white-space:nowrap}th{color:var(--muted);font-weight:750}
+.med-row{display:flex;gap:12px;align-items:center;padding:13px 0;border-bottom:1px solid var(--line);transition:background .2s}
+.med-row:last-child{border-bottom:0}
+.med-symbol{width:40px;height:40px;display:grid;place-items:center;border-radius:13px;background:var(--peach);font-size:20px;flex-shrink:0}
+.med-row b{display:block;font-size:13px}.med-row small{color:var(--muted)}
+.med-row button{margin-left:auto}
+.due-banner{display:none;align-items:center;gap:10px;background:linear-gradient(115deg,#fff3e9,#ffe4d1);border:1px solid #ffb98a;color:#9c4a16;border-radius:14px;padding:13px 16px;margin-bottom:16px;font-size:13px;font-weight:650;animation:pageIn .4s ease}
+[data-theme="dark"] .due-banner{background:#3d2718;color:#ffb27f;border-color:#7a4a28}
+.due-banner.show{display:flex}
+.due-banner .pulse{width:10px;height:10px;border-radius:50%;background:var(--orange);animation:pulseDot 1.2s ease infinite;flex-shrink:0}
+@keyframes pulseDot{0%,100%{box-shadow:0 0 0 0 #f0692a66}60%{box-shadow:0 0 0 8px #f0692a00}}
+
+.breath{height:175px;display:grid;place-items:center}
+.breath-orb{width:110px;height:110px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ffc59f,#f0692a);box-shadow:0 0 0 14px var(--peach),0 0 0 28px var(--bg);display:grid;place-items:center;color:#fff;font-weight:800;animation:breathe 8s ease-in-out infinite}
+@keyframes breathe{0%,100%{transform:scale(.82)}50%{transform:scale(1.12)}}
+
+.games-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:14px}
+.game-card{border:1px solid var(--line);border-radius:16px;padding:18px;background:var(--card);text-align:left;color:var(--ink);position:relative;overflow:hidden;transition:all .25s ease}
+.game-card:before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,transparent 60%,var(--peach));opacity:0;transition:opacity .25s}
+.game-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);border-color:var(--orange-soft)}
+.game-card:hover:before{opacity:1}
+.game-card .g-ico{font-size:30px;transition:transform .2s}.game-card:hover .g-ico{transform:scale(1.15) rotate(5deg)}
+.game-card b{display:block;font-size:14px;margin:8px 0 3px}
+.game-card small{color:var(--muted);font-size:11.5px}
+.game-card .best{margin-top:10px;font-size:10.5px;color:var(--green);font-weight:800}
+.game-stage{background:var(--bg);border:1px solid var(--line);border-radius:16px;padding:22px;min-height:320px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;position:relative;overflow:hidden}
+.game-score{font-size:34px;font-weight:800;letter-spacing:-1px}
+.seq-pad{width:82px;height:82px;border-radius:18px;opacity:.45;transition:opacity .15s,transform .15s,box-shadow .15s;border:2px solid rgba(0,0,0,.08)}
+.seq-pad.lit{opacity:1;transform:scale(1.07);box-shadow:0 0 24px currentColor}
+.mem-grid{display:grid;grid-template-columns:repeat(4,64px);gap:9px}
+.mem-card{width:64px;height:64px;border-radius:13px;background:linear-gradient(145deg,var(--orange),var(--orange2));font-size:26px;display:grid;place-items:center;color:transparent;transform-style:preserve-3d;transition:transform .35s,background .35s,color .35s;user-select:none}
+.mem-card.flip{background:var(--card);color:var(--ink);transform:rotateY(180deg);border:1px solid var(--line)}
+.mem-card.matched{background:#e5f6ee;color:#23775c;border-color:#9fd6ba;animation:popIn .3s ease}
+.reaction-pad{width:100%;max-width:380px;height:190px;border-radius:18px;display:grid;place-items:center;font-weight:800;font-size:17px;color:#fff;transition:background .1s;user-select:none}
+.word-chip{display:inline-block;background:var(--peach);color:#a04a17;border-radius:10px;padding:7px 12px;margin:4px;font-weight:700;font-size:14px;animation:popIn .3s ease}
+.math-q{font-size:32px;font-weight:800;letter-spacing:-.5px}
+
+.modal-backdrop{position:fixed;inset:0;background:rgba(30,20,15,.5);backdrop-filter:blur(5px);z-index:100;display:none;align-items:center;justify-content:center;padding:18px;animation:fadeIn .25s ease}
+.modal-backdrop.open{display:flex}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal{background:var(--card);border:1px solid var(--line);border-radius:22px;max-width:640px;width:100%;max-height:86vh;overflow-y:auto;padding:26px;box-shadow:0 30px 80px rgba(0,0,0,.3);animation:modalIn .35s cubic-bezier(.22,.9,.3,1)}
+@keyframes modalIn{from{opacity:0;transform:translateY(24px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+.modal h2{margin:0 0 4px;font-size:21px;letter-spacing:-.5px}.modal .sub{color:var(--muted);font-size:13px;margin:0 0 16px}
+.modal-close{position:sticky;top:0;float:right;background:var(--peach);color:#a04a17;width:34px;height:34px;border-radius:50%;font-weight:800;transition:transform .2s}
+.modal-close:hover{transform:scale(1.1)}
+.help-search{width:100%;border:1px solid var(--line);background:var(--bg);border-radius:11px;padding:11px 13px;color:var(--ink);outline:none;margin-bottom:14px}
+.help-search:focus{border-color:var(--orange);box-shadow:0 0 0 3px var(--ring)}
+.help-item{border:1px solid var(--line);border-radius:13px;padding:13px 15px;margin-bottom:9px;background:var(--bg);transition:border-color .2s}
+.help-item:hover{border-color:var(--orange-soft)}
+.help-item b{font-size:13px;display:flex;align-items:center;gap:8px}
+.help-item p{font-size:12px;color:var(--muted);margin:5px 0 0}
+.help-item kbd{background:var(--peach);color:#a04a17;border-radius:6px;padding:2px 7px;font-size:10px;font-weight:800;font-family:inherit}
+@keyframes fabPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
+.help-fab:hover{transform:scale(1.15)}
+
+.toast{position:fixed;right:22px;bottom:86px;background:#302d2b;color:#fff;padding:13px 18px;border-radius:13px;box-shadow:0 12px 35px rgba(0,0,0,.25);z-index:120;animation:modalIn .3s ease;max-width:min(390px,calc(100vw - 40px));font-size:13px;border-left:4px solid var(--orange)}
+
+.heat-meter{display:flex;gap:5px;flex-wrap:wrap}
+.heat-seg{flex:1;min-width:34px;height:38px;border-radius:9px;border:1px solid var(--line);background:var(--bg);font-weight:800;font-size:12px;color:var(--muted);transition:all .2s}
+.heat-seg.on{background:linear-gradient(135deg,#ff8b4d,#f0692a);color:#fff;border-color:transparent;transform:scale(1.06);box-shadow:0 4px 12px #f0692a44}
+.site-dot{width:34px;height:34px;border-radius:50%;background:var(--peach);display:grid;place-items:center;font-size:13px;font-weight:800;color:#a04a17;border:2px solid transparent;cursor:pointer;transition:transform .2s}
+.site-dot:hover{transform:scale(1.15)}
+.site-dot.used{background:linear-gradient(135deg,var(--orange),#ff8b4d);color:#fff}
+.site-dot.last{border-color:var(--green);box-shadow:0 0 0 3px #2f8f6e33}
+.footer-note{color:var(--muted);font-size:11px;margin-top:26px;text-align:center}
+.mobile-menu{display:none}
+.toast-root{position:fixed;z-index:120}
+
+.urgent-backdrop{position:fixed;inset:0;z-index:150;background:rgba(25,20,18,.46);display:none;align-items:center;justify-content:center;padding:14px}
+.urgent-backdrop.open{display:flex}
+.urgent-card{width:min(100%,490px);max-height:85vh;overflow:auto;background:var(--card);color:var(--ink);border:1px solid #e7a16d;border-left:5px solid #c65a25;border-radius:16px;padding:20px;box-shadow:0 18px 55px rgba(0,0,0,.24)}
+.urgent-card h2{font-size:18px;line-height:1.3;margin:0 0 8px;color:var(--ink)}
+.urgent-card p{font-size:13px;line-height:1.6;margin:8px 0;color:var(--text)}
+.urgent-detail{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:12px;line-height:1.55;overflow-wrap:anywhere}
+.urgent-actions{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:16px}
+.urgent-link{border:0;background:transparent;color:var(--orange);font-size:12px;font-weight:800;text-decoration:underline;text-underline-offset:3px;padding:8px 0;cursor:pointer}
+@media(max-width:480px){.urgent-card{padding:16px}.urgent-actions{align-items:stretch}.urgent-actions .btn{width:100%}}
+@media(max-width:1050px){.app{grid-template-columns:210px 1fr}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.two-col,.calendar-layout{grid-template-columns:1fr}}
+@media(max-width:720px){.app{display:block}.sidebar{position:fixed;left:0;top:0;width:262px;transform:translateX(-105%);transition:transform .25s ease;box-shadow:15px 0 40px rgba(0,0,0,.15)}.sidebar.open{transform:translateX(0)}.mobile-menu{display:inline-grid}.main{padding:16px 13px 60px}.topbar{margin-bottom:18px}.hero{padding:22px 20px}.hero .hero-art{font-size:40px;padding:0}.stats{gap:10px}.card{padding:15px}.three-col{grid-template-columns:1fr}.day{min-height:51px}.form-grid{grid-template-columns:1fr}.full{grid-column:auto}.symptoms{grid-template-columns:1fr}.mem-grid{grid-template-columns:repeat(4,58px)}.mem-card{width:58px;height:58px}.top-actions .hide-mobile{display:none}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+body.reduced-motion *,body.reduced-motion *:before,body.reduced-motion *:after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+
+.test-readout{font-size:32px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-1px}
+.report-graphs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:18px}
+.report-graph-card{min-width:0;border:1px solid var(--line);border-radius:15px;padding:14px;background:var(--card);break-inside:avoid}
+.report-graph-card h3{font-size:14px;margin:0 0 3px}.report-graph-card p{font-size:11px;color:var(--muted);margin:0 0 8px}
+.timeline-chart{display:block;width:100%;height:auto;min-height:145px;overflow:visible}
+.mood-history{margin-top:16px}.mood-history .event{align-items:flex-start}
+.calendar-legend{flex-wrap:wrap}
+@media(max-width:760px){.report-graphs{grid-template-columns:1fr}}
+@media print{.sidebar,.topbar,.btn,.nav,.report-graphs button{display:none!important}.report-graphs{grid-template-columns:1fr 1fr}.report-graph-card{break-inside:avoid;page-break-inside:avoid}.page{display:none!important}#page-reports{display:block!important}body{background:#fff;color:#111}.report-graph-card{background:#fff;color:#111}}
+</style></head>
+<body>
+<div class="app">
+<aside class="sidebar" id="sidebar">
+<div class="brand">
+  <div class="logo" style="background: linear-gradient(135deg, #f0692a, #ff9b61); display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 16px; line-height: 1;" title="Multiple Sclerosis Awareness Orange Ribbon">
+    🎗️
+    <span style="font-size: 7px; color: #ffffff; font-weight: 800; letter-spacing: -0.2px; margin-top: 2px;">MSpace</span>
+  </div>
+  <div><b>MSpace<span style="color:var(--orange)">.</span></b><small>MS Companion</small></div>
+</div>
+<div><div class="navlabel">YOUR SPACE</div><nav class="nav" id="nav">
+<button class="active" data-page="dashboard"><span class="ico">⌂</span>Overview</button>
+<button data-page="whatisms"><span class="ico">🧠</span>What is MS?</button>
+<button data-page="symptoms"><span class="ico">♡</span>Symptom tracker</button>
+<button data-page="calendar"><span class="ico">▦</span>Health calendar</button>
+<button data-page="medications"><span class="ico">✚</span>Medications</button>
+<button data-page="games"><span class="ico">🧩</span>Brain games &amp; tests</button>
+<button data-page="toolkit"><span class="ico">🧰</span>MS toolkit</button>
+<button data-page="pace"><span class="ico">☼</span>Energy &amp; pacing</button>
+<button data-page="reports"><span class="ico">▤</span>Health reports</button>
+</nav></div>
+<div><div class="navlabel">SUPPORT &amp; TOOLS</div><nav class="nav">
+<button data-page="doctor"><span class="ico">✉</span>Message your doctor</button>
+<button data-page="wellbeing"><span class="ico">❋</span>Wellbeing studio</button>
+<button data-page="resources"><span class="ico">✧</span>Learn &amp; connect</button>
+<button data-page="settings"><span class="ico">⚙</span>Settings &amp; privacy</button>
+</nav></div>
+<div class="side-note"><div class="sun">🌤️</div><b>Small steps count.</b><p>Your health story is more than any single day. Go at your own pace.</p><button class="btn soft small" onclick="go('pace')">Plan a gentle day ↗</button></div>
+</aside>
+<main class="main">
+<header class="topbar"><div style="display:flex;align-items:center;gap:12px"><button class="iconbtn mobile-menu" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button><div><div class="eyebrow" id="dateGreeting">YOUR PERSONAL MSPACE</div><h1 id="pageTitle">One Step at a Time</h1></div></div>
+<div class="top-actions">
+<button class="btn soft small hide-mobile" onclick="openHelp()">❓ How to navigate</button>
+<button class="iconbtn hide-mobile" title="Quick symptom log" onclick="go('symptoms')">♡</button>
+<button class="iconbtn" title="Health calendar" onclick="go('calendar')">▦</button>
+<button class="iconbtn" title="Toggle dark mode" onclick="toggleTheme()" id="themeBtn">🌙</button>
+<div class="avatar" id="avatar" onclick="go('settings')" style="cursor: pointer;" title="Go to settings">S</div>
+</div></header>
+
+<section class="page active" id="page-dashboard">
+<div class="rise" style="position:relative;border-radius:24px;overflow:hidden;margin-bottom:18px;box-shadow:var(--shadow-lg);isolation:isolate">
+<img src="https://img.magnific.com/premium-photo/hands-holding-orange-ribbon-against-blue-sky-leukemia-multiple-sclerosis-other-diseases39-awareness-ar-169-v-61-job-id-026b0fd383b446a1a138b8ae9dcba37d_971989-36727.jpg?semt=ais_hybrid&w=740&q=80"alt="A person living with multiple sclerosis facing the sunrise" style="width:100%;height:clamp(240px,32vw,360px);object-fit:cover;object-position:center 62%;display:block">>
+<div style="position:absolute;inset:auto 0 0 0;padding:28px clamp(20px,4vw,38px);z-index:2;color:#fff">
+<div class="eyebrow" style="color:#ffd9bd">LIFE WITH MULTIPLE SCLEROSIS</div>
+<h2 style="font-size:clamp(21px,3vw,32px);letter-spacing:-.8px;margin:7px 0;line-height:1.2">Living beyond your diagnosis</h2>
+<p style="margin:0;max-width:620px;color:#fff3ea;font-size:14px">Some days are heavier than others. MSpace exists for quiet mornings, small victories, and every step of life. Because you are more than your diagnosis.</p>
+<button class="btn white" onclick="go('whatisms')" style="margin-top:15px">Learn more about MS <span>→</span></button>
+</div></div>
+<div class="hero orange rise"><div><div class="eyebrow" style="color:#fff0e7">AN APP THAT WILL MOVE WITH YOU</div><h2 id="hello">Hello there. How are you feeling today?</h2><p>Notice your personal patterns, record history, celebrate small wins, and bring a clearer picture of your days to your doctor.</p>
+<button class="btn white" onclick="go('symptoms')">Log how you feel <span>→</span></button> <button class="btn white" style="margin-top:16px" onclick="openHelp()">Take the tour</button></div><div class="hero-art">🎗️</div></div>
+<div class="grid stats">
+<div class="card rise rise-1"><div class="stat-top">Today's energy <span class="stat-icon">☀️</span></div><div class="stat-number" id="energyStat">—<span style="font-size:14px;color:var(--muted)">/10</span></div><div class="stat-foot">Your daily check-in</div></div>
+<div class="card rise rise-2"><div class="stat-top">Symptom entries <span class="stat-icon">♡</span></div><div class="stat-number" id="entryStat">0</div><div class="stat-foot">Logs saved on this device</div></div>
+<div class="card rise rise-3"><div class="stat-top">Medication check-ins <span class="stat-icon">✚</span></div><div class="stat-number" id="medStat">0<span style="font-size:14px;color:var(--muted)"> today</span></div><div class="stat-foot">Marked complete today</div></div>
+<div class="card rise rise-4"><div class="stat-top">Next appointment <span class="stat-icon">▦</span></div><div class="stat-number" id="nextAppt" style="font-size:19px;margin:15px 0 8px">Not set</div><div class="stat-foot">Add one in your calendar</div></div>
+</div>
+<div class="grid two-col">
+<div><div class="section-head rise rise-1"><div><h3>Your recent patterns</h3><p>Personal observations to help you spot trends</p></div><button class="btn ghost small" onclick="go('reports')">View report ↗</button></div>
+<div class="card rise rise-1"><div class="card-title"><h3>Energy &amp; fatigue trends</h3><span class="pill">Last 7 days</span></div><svg class="chart" id="trendChart" viewBox="0 0 600 165" preserveAspectRatio="none" aria-label="Energy trend chart"></svg><div class="legend"><span><i class="dot"></i>Energy</span><span><i class="dot" style="background:#ffc49f"></i>Fatigue</span></div><p style="font-size:11px;color:var(--muted);margin-bottom:0">Your logged ratings only. Missing days are left blank; this chart visualizes your entries.</p></div>
+<div class="section-head rise rise-2"><div><h3>Quick actions</h3><p>Make the most of your day</p></div></div>
+<div class="quick-grid rise rise-2">
+<button class="quick" onclick="go('symptoms')"><span>📝</span><b>Log symptoms</b><small>Record a quick check-in</small></button>
+<button class="quick" onclick="go('games')"><span>🧩</span><b>Play brain games</b><small>Keep your mind sharp</small></button>
+<button class="quick" onclick="go('calendar')"><span>🗓️</span><b>Add health event</b><small>Appointments, notes, more</small></button>
+<button class="quick" onclick="go('doctor')"><span>💌</span><b>Draft doctor email</b><small>Share what matters</small></button>
+</div></div>
+<div><div class="section-head rise rise-2"><div><h3>Today's gentle checklist</h3><p>Choose what you think feels right</p></div></div>
+<div class="card rise rise-2" id="checklist"><div class="task"><button class="check" onclick="toggleTask(this)"></button><div><b>Pause and check in</b><small>How are body and mind today?</small></div></div><div class="task"><button class="check" onclick="toggleTask(this)"></button><div><b>Take a planned rest</b><small>Rest is a valid part of your health</small></div></div><div class="task"><button class="check" onclick="toggleTask(this)"></button><div><b>Prepare a question</b><small>Save it for your care team</small></div></div><div class="task"><button class="check" onclick="toggleTask(this)"></button><div><b>Do one thing you enjoy</b><small>Small moments matter too</small></div></div><div class="progress" style="margin-top:13px"><span id="taskProgress" style="width:0%"></span></div><small id="taskCount" style="color:var(--muted);display:block;margin-top:7px">0 of 4 checked</small></div>
+<div class="section-head rise rise-3"><div><h3>Medication reminders due</h3><p>Based on your set times</p></div></div>
+<div class="card rise rise-3" id="dueTodayCard"><div class="empty">Add medications with reminder times to see them here.</div></div>
+<div class="section-head rise rise-3">
+  <div>
+    <h3>Missed calendar events</h3>
+    <p>Past timed events that haven't been marked done</p>
+  </div>
+</div>
+<div class="card rise rise-3" id="missedCalendarCard">
+  <div class="empty">No missed calendar events.</div>
+</div>
+
+<div class="section-head rise rise-3">
+  <div>
+    <h3>Calendar events coming up</h3>
+    <p>Your upcoming timed appointments and reminders</p>
+  </div>
+</div>
+<div class="card rise rise-3" id="upcomingCalendarCard">
+  <div class="empty">No upcoming timed events.</div>
+</div>
+<div class="section-head rise rise-3"><div><h3>Quick note</h3><p>Anything you want to remember?</p></div></div>
+<div class="card rise rise-3"><div class="field" style="margin-top:0"><textarea id="quickNote" placeholder="A question,win, or possible trigger…" rows="3"></textarea></div><button class="btn primary" onclick="saveQuickNote()">Save note</button><div id="quickNoteStatus" style="font-size:11px;color:var(--muted);margin-top:8px"></div><div class="section-head" style="margin-top:14px"><div><h3>Saved quick notes</h3><p>Notes stay on this device and can be included in your reports.</p></div></div><div id="quickNoteHistory" class="empty">No quick notes yet.</div></div></div>
+</div>
+</section>
+
+<section class="page" id="page-symptoms">
+<div class="grid two-col"><div class="card"><div class="card-title"><div><h3>How are you feeling?</h3><small>Log as often or as little as you like.</small></div><span class="pill">Daily check-in</span></div>
+<form id="symptomForm"><div class="form-grid"><div class="field"><label for="logDate">Date</label><input type="date" id="logDate" required></div><div class="field"><label for="logTime">Time of day</label><select id="logTime"><option>Morning</option><option>Afternoon</option><option>Evening</option><option>Night</option></select></div><div class="field"><label for="energy">Energy level (1-10)</label><div class="range-row"><input id="energy" type="range" min="1" max="10" value="6" oninput="rangeVal('energy')"><span class="range-num" id="energyVal">6</span></div></div><div class="field"><label for="fatigue">Fatigue level (1-10)</label><div class="range-row"><input id="fatigue" type="range" min="1" max="10" value="4" oninput="rangeVal('fatigue')"><span class="range-num" id="fatigueVal">4</span></div></div></div>
+<div class="section-head" style="margin-top:8px"><div><h3>Specific symptom intensity</h3><p>0 means none and 10 means most intense for you.</p></div></div><div class="symptoms" id="symptomSliders"></div>
+<div class="notice" style="margin-top:14px">ℹ️ <b>Where does everything go?</b> All logged data (including your energy levels, fatigue ratings, mood, vision notes, heat sensitivity, and custom trackers) is stored safely and privately right inside your browser's local storage on this device. You can view all past entries right here in your symptom history or check your trends on the overview dashboard and health reports page!</div>
+<div class="form-grid"><div class="field"><label for="mood">Overall mood</label><select id="mood"><option>Okay</option><option>Good</option><option>Hopeful</option><option>Anxious</option><option>Low</option><option>Overwhelmed</option></select></div><div class="field"><label for="sleep">Sleep last night</label><select id="sleep"><option value="">Not recorded</option><option>Under 4 hours</option><option>4–6 hours</option><option>6–8 hours</option><option>8+ hours</option><option>Restless / disrupted</option></select></div><div class="field"><label for="weather">Possible context</label><select id="weather"><option>Not sure</option><option>Warm / heat</option><option>Stressful day</option><option>More activity than usual</option><option>Poor sleep</option><option>Illness / feeling unwell</option><option>Restful day</option><option>Menstrual cycle</option></select></div><div class="field"><label for="mobility">Mobility today</label><select id="mobility"><option>Usual for me</option><option>More difficult than usual</option><option>Needed extra support</option><option>Better than usual</option><option>Not applicable / prefer not to say</option></select></div><div class="field full"><label for="symptomNotes">Notes / possible triggers / questions</label><textarea id="symptomNotes" placeholder="What did you notice? Anything that helped?"></textarea></div></div><button class="btn primary" type="submit">Save symptom check-in ✓</button> <button class="btn ghost" type="button" onclick="resetSymptomForm()">Clear form</button></form></div>
+<div><div class="card"><div class="card-title"><h3>Symptom history</h3><span class="pill" id="historyCount">0 entries</span></div><div id="symptomHistory" class="empty">Your saved check-ins will appear here.</div></div><div class="card" style="margin-top:16px"><div class="card-title"><h3>Helpful to remember</h3><span>🌱</span></div><p style="font-size:13px;color:var(--muted)">Symptoms can fluctuate naturally day to day. Your log is your own personal record of your experiences to help you communicate clearly with your healthcare team and understand how your health is progessing over time.</p></div></div></div>
+</section>
+
+<section class="page" id="page-calendar">
+<div class="calendar-layout"><div class="card"><div class="cal-head"><button onclick="changeMonth(-1)">←</button><h3 id="monthLabel">Month Year</h3><button onclick="changeMonth(1)">→</button></div><div class="cal-grid" id="calendarGrid"></div><div class="calendar-legend"><span><i class="mark" style="background:#e87932"></i> Symptom log</span><span><i class="mark" style="background:#2563eb"></i> Appointment</span><span><i class="mark" style="background:#15803d"></i> Medication event</span><span><i class="mark" style="background:#c026d3"></i> Mood</span><span><i class="mark" style="background:#0891b2"></i> Vision</span><span><i class="mark" style="background:#dc2626"></i> Flare</span><span><i class="mark" style="background:#6d28d9"></i> Game/test</span><span><i class="mark" style="background:#0f766e"></i> Dose check-in</span><span><i class="mark" style="background:#7c3aed"></i> Personal note</span><span><i class="mark" style="background:#64748b"></i> Activity</span><span><i class="mark" style="background:#14b8a6"></i> Calendar symptom event</span></div><p style="font-size:11px;color:var(--muted)">Dots mark symptom logs, mood entries, vision records, flares, games/tests, medication check-ins, and calendar events. Select a date to view the details. Data is stored on this device.</p></div>
+<div class="card"><div class="card-title"><div><h3 id="selectedDateLabel">Selected day</h3><small>Your health timeline</small></div><span>📌</span></div><div id="dayEvents"></div><hr style="border:0;border-top:1px solid var(--line);margin:17px 0"><h3 style="font-size:14px">Add to this day</h3><form id="eventForm"><div class="field"><label>Event type</label><select id="eventType"><option value="Appointment">Doctor appointment</option><option value="Medication">Medication / infusion</option><option value="Personal note">Personal note</option><option value="Symptom">Symptom reminder</option><option value="Activity">Activity / rest plan</option></select></div><div class="field"><label>Title</label><input id="eventTitle" required placeholder="ex: Neurology follow-up"></div><div class="field"><label>Time (optional)</label><input type="time" id="eventTime"></div><div class="field"><label>Details (optional)</label><textarea id="eventDetails" rows="2" placeholder="Questions to ask, preparation, notes…"></textarea></div><button class="btn primary" type="submit">Add calendar event</button></form></div></div>
+</section>
+
+<section class="page" id="page-medications">
+<div class="due-banner" id="dueBanner"><span class="pulse"></span><span id="dueBannerText"></span><button class="btn small white" style="margin:0 0 0 auto;background:#fff;color:#c45621" onclick="go('medications')">Review</button></div>
+<div class="grid two-col"><div class="card"><div class="card-title"><div><h3>Medication list</h3><small>Organize reminders prescribed by your clinician.</small></div><span class="pill">Your plan</span></div>
+<form id="medForm"><div class="form-grid"><div class="field"><label>Medication name</label><input id="medName" required placeholder="Name on your prescription"></div><div class="field"><label>Prescribed dose (optional)</label><input id="medDose" placeholder="As prescribed"></div><div class="field"><label>First reminder time</label><input id="medTime" type="time" required></div><div class="field"><label>Schedule</label><select id="medSchedule"><option>Daily</option><option>Twice daily</option><option>Weekly</option><option>As needed</option><option>Infusion / appointment</option><option>Custom — see notes</option></select></div><div class="field"><label>Second reminder (twice daily only)</label><input id="medTime2" type="time"><small style="color:var(--muted);font-size:10.5px">Optional unless the schedule is Twice daily.</small></div><div class="field"><label>Weekly reminder day</label><select id="medWeekday"><option value="1">Monday</option><option value="2">Tuesday</option><option value="3">Wednesday</option><option value="4">Thursday</option><option value="5">Friday</option><option value="6">Saturday</option><option value="0">Sunday</option></select></div><div class="field full"><label>Instructions / notes</label><textarea id="medNotes" rows="2" placeholder="Follow any extra steps and instructions provided by your care team"></textarea></div></div><button class="btn primary" type="submit">＋ Add medication</button></form>
+
+<div class="notice">MSpace does not prescribe doses or change medical treatment. Always follow your real prescription and consult your pharmacist or doctor regarding any missed doses or side effects.</div></div>
+<div class="card"><div class="card-title"><h3>Your medications</h3><span class="pill green" id="medListCount">0 saved</span></div><div id="medList" class="empty">Add a medication to organize your list.</div></div></div>
+<div class="card" style="margin-top:16px"><div class="card-title"><div><h3>Today's check-ins</h3><small>Tap to record a dose as taken or skipped for your personal log.</small></div><span>✓</span></div><div id="medCheckins" class="empty">Add medications to see check-ins here.</div></div>
+</section>
+
+<section class="page" id="page-games">
+<div class="hero purple rise"><div><div class="eyebrow" style="color:#fdf0ff">KEEP YOUR MIND ACTIVE</div><h2>Brain games, made gentle.</h2><p>Short, playful mini-games designed to exercise memory, attention, and processing speed. Play at your leisure. All scores remain completely private to your device.</p><button class="btn white" onclick="document.getElementById('gamesGrid').scrollIntoView({behavior:'smooth'})">Pick a game ↓</button></div><div class="hero-art">🧩</div></div>
+<div class="games-grid rise rise-1" id="gamesGrid" style="margin-top:16px">
+<button class="game-card" onclick="startGame('memory')"><div class="g-ico">🃏</div><b>Memory Match</b><small>Flip cards and find matching pairs to practice visual memory.</small><div class="best" id="best-memory"></div></button>
+<button class="game-card" onclick="startGame('sequence')"><div class="g-ico">🎨</div><b>Color Sequence</b><small>Watch the pattern and repeat it as it grows.</small><div class="best" id="best-sequence"></div></button>
+<button class="game-card" onclick="startGame('reaction')"><div class="g-ico">⚡</div><b>Reaction Time</b><small>Tap as soon as the screen turns green to test processing speed.</small><div class="best" id="best-reaction"></div></button>
+<button class="game-card" onclick="startGame('words')"><div class="g-ico">📖</div><b>Word Recall</b><small>Study a short word list, then test your memory.</small><div class="best" id="best-words"></div></button>
+<button class="game-card" onclick="startGame('math')"><div class="g-ico">🔢</div><b>Math Sprint</b><small>Solve simple problems at your own pace in 60 seconds.</small><div class="best" id="best-math"></div></button>
+<button class="game-card" onclick="startGame('pattern')"><div class="g-ico">🔺</div><b>Pattern Play</b><small>Identify which shape comes next to exercise logical reasoning.</small><div class="best" id="best-pattern"></div></button>
+<button class="game-card" onclick="startGame('peg')"><div class="g-ico">🟠</div><b>Nine-Hole Peg Test</b><small> Timer for the pegboard dexterity MS task. This requires a real nine-hole pegboard and pegs.</small><div class="best" id="best-peg"></div></button>
+<button class="game-card" onclick="startGame('walk')"><div class="g-ico">🚶</div><b>Timed 25-Foot Walk</b><small>Optional timer for a measured 25-foot walk and you should only attempt if safe and following your clinician's instructions.</small><div class="best" id="best-walk"></div></button>
+</div>
+<div class="card rise rise-2" style="margin-top:16px" id="gameStage"><div class="game-stage"><div style="font-size:44px">🧩</div><h3 style="margin:0">Choose a game above</h3><p style="color:var(--muted);font-size:13px;margin:0">Games automatically save your personal best score. Take breaks whenever you need.</p></div></div>
+<div class="card" style="margin-top:16px"><div class="card-title"><div><h3>📈 Your performance history</h3><small>Past completed games and timed tests, newest first</small></div><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span class="pill" id="gameHistoryCount">0 sessions</span><button class="delete-history" onclick="clearGameHistory()" title="Delete all saved game and timed-test history">Clear history</button></div></div><div id="gameTrendSummary" class="notice">Complete a game or test to start building your personal history.</div><div id="gameHistory" class="empty">No completed sessions saved yet.</div></div><div class="notice" style="margin-top:16px">Brain games are for general cognitive stimulation, not diagnosis or treatment. The Nine-Hole Peg Test and Timed 25-Foot Walk are clinical performance measures; this app only provides a simple timer and does not standardize or interpret either test. Ask your MS care team how they should be performed.</div>
+</section>
+
+
+<section class="page" id="page-whatisms">
+<div class="rise" style="position:relative;border-radius:24px;overflow:hidden;margin-bottom:18px;box-shadow:var(--shadow-lg);isolation:isolate">
+<img src="https://img.magnific.com/premium-photo/hands-holding-orange-ribbon-against-blue-sky-leukemia-multiple-sclerosis-other-diseases39-awareness-ar-169-v-61-job-id-026b0fd383b446a1a138b8ae9dcba37d_971989-36727.jpg?semt=ais_hybrid&w=740&q=80"alt="A person living with multiple sclerosis facing the sunrise" style="width:100%;height:clamp(240px,32vw,360px);object-fit:cover;object-position:center 62%;display:block">
+<div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(40,18,5,.04) 30%,rgba(40,18,5,.78));z-index:1"></div>
+<div style="position:absolute;inset:auto 0 0 0;padding:28px clamp(20px,4vw,38px);z-index:2;color:#fff">
+<div class="eyebrow" style="color:#ffd9bd">UNDERSTANDING THE CONDITION</div>
+<h2 style="font-size:clamp(21px,3vw,32px);letter-spacing:-.8px;margin:7px 0;line-height:1.2">What is Multiple Sclerosis?</h2>
+<p style="margin:0;max-width:620px;color:#fff3ea;font-size:14px">Help you or someone you love navigate MS.</p>
+</div></div>
+<div class="grid two-col">
+<div class="card rise rise-1"><div class="card-title"><h3>🧠 The basics</h3><span class="pill"></span></div>
+<p style="font-size:13.5px;line-height:1.7">Multiple sclerosis (MS) is a long term chronic condition of the central nervous system which impacts the brain, spinal cord, and optic nerves. In MS, the immune system mistakenly attacks myelin which is the protective coating around nerve fibers. When myelin is damaged signals between the brain and the body can slow down, become distorted, or stop altogether.</p>
+<p style="font-size:13.5px;line-height:1.7"><b>sclerosis</b> means scarring, and <b>multiple</b> refers to the many scars (which is also called lesions or plaques) that can form as the condition progresses. Everyone's MS is different so no two people experience it exactly the same way.</p>
+<div class="notice" style="margin-bottom:0">ℹ️ MS is not contagious, and it is not directly inherited but genetics can play a very small role in risk.</div></div>
+<div class="card rise rise-2"><div class="card-title"><h3>🩺 Common symptoms</h3><span>♡</span></div>
+<div class="task"><div class="eventicon" style="background:var(--peach);border-radius:10px;padding:8px">😮‍💨</div><div><b>Fatigue</b><small>Often the most common and disruptive symptom which is very different from ordinary tiredness.</small></div></div>
+<div class="task"><div class="eventicon" style="background:var(--peach);border-radius:10px;padding:8px">👁️</div><div><b>Vision problems</b><small>Blurred or double vision, pain with eye movements.</small></div></div>
+<div class="task"><div class="eventicon" style="background:var(--peach);border-radius:10px;padding:8px">🚶</div><div><b>Mobility &amp; balance</b><small>Numbness, tingling, weakness, stiffness (spasticity), and unsteady walking.</small></div></div>
+<div class="task"><div class="eventicon" style="background:var(--peach);border-radius:10px;padding:8px">🌫️</div><div><b>Cognitive changes</b><small>"Brain fog," trouble finding words, or slower processing.</small></div></div>
+<div class="task" style="border-bottom:0"><div class="eventicon" style="background:var(--peach);border-radius:10px;padding:8px">🔥</div><div><b>Heat sensitivity</b><small>Warmth can temporarily worsen symptoms and cause a relapse</small></div></div></div>
+</div>
+<div class="grid three-col">
+<div class="card rise rise-3"><div class="card-title"><h3>🔄 The types of MS</h3><span>1 of 3</span></div>
+<p style="font-size:13px"><b>Relapsing Remitting (RRMS)</b></p><p style="font-size:12.5px;color:var(--muted)">The most common form (around 85% of diagnoses). Periods of new or worsening symptoms (relapses) are followed by periods of recovery or stability (remission).</p>
+<p style="font-size:13px;margin-top:12px"><b>Secondary Progressive (SPMS)</b></p><p style="font-size:12.5px;color:var(--muted)">Over time, some people transition from relapsing-remitting MS to a stage where symptoms gradually worsen, with or without relapses.</p>
+<p style="font-size:13px;margin-top:12px"><b>Primary Progressive (PPMS)</b></p><p style="font-size:12.5px;color:var(--muted)">A smaller group experience gradually worsening symptoms from the very beginning, without distinct relapses.</p></div>
+<div class="card rise rise-3"><div class="card-title"><h3>🌍 Who does MS affect?</h3><span>2 of 3</span></div>
+<p style="font-size:13px;color:var(--muted);line-height:1.7">Most people are diagnosed between the ages of <b>20 to 50</b>. MS is around 2  to 3 times more common in women than in men. It occurs in every region of the world but is more frequently diagnosed higher north or south farther from the equator.</p>
+<p style="font-size:13px;color:var(--muted);line-height:1.7">MS isn't considered fatal for most people and many live very full, active lives with the condition especially with today's treatments.</p></div>
+<div class="card rise rise-3"><div class="card-title"><h3>💊 Managing MS</h3><span>3 of 3</span></div>
+<p style="font-size:13px;color:var(--muted);line-height:1.7">There is currently no cure, but there are more treatment options than ever:</p>
+<p style="font-size:13px;color:var(--muted);line-height:1.7">• <b>Disease-modifying therapies (DMTs)</b> can reduce relapses and slow progression.<br>• <b>Symptom management</b> from physical therapy to medications it helps with daily life.<br>• <b>Lifestyle</b> movement, rest, ways to cool off,and emotional support matter.</p>
+<button class="btn soft" onclick="go('resources')" style="margin-top:6px">Explore trusted resources ↗</button></div>
+</div>
+<div class="card rise rise-4" style="margin-top:16px"><div class="card-title"><h3>🎗️ A word of hope</h3><span>♡</span></div>
+<p style="font-size:13.5px;line-height:1.7">An MS diagnosis changes things but it can't define you. Millions of people around the world live meaningful, joyful lives with MS. Progress in research continues every year. tools like tracking your symptoms can give you and your doctors the clarity to face it together.</p>
+<div class="notice" style="margin-bottom:0">⚠️ This page is educational and does not replace advice from your neurologist or MS medical support. Always speak with your clnician about your personal situation.</div></div>
+</section>
+
+<section class="page" id="page-toolkit">
+<div class="hero orange rise"><div><div class="eyebrow" style="color:#fff0e7">MADE FOR LIFE WITH MS</div><h2>Your MS toolkit.</h2><p>Practical trackers designed around common everyday needs — including heat sensitivity, injection sites, flare records, vision tracking, and appointment prep.</p></div><div class="hero-art">🧰</div></div>
+<div class="grid two-col" style="margin-top:16px">
+<div class="card rise rise-1"><div class="card-title"><div><h3>🔥 Heat sensitivity log</h3><small>Warmth could temporarily influence MS symptoms. It is important to track how heat affects you day to day.</small></div></div>
+<div class="field"><label>Today's heat exposure</label><div class="heat-meter" id="heatMeter"></div></div>
+<div class="field"><label>Did heat affect your symptoms today?</label><select id="heatEffect"><option value="">Not recorded</option><option>Yes — noticeably worse</option><option>Slightly</option><option>No difference</option><option>Actually felt better</option></select></div>
+<div class="field"><label>Cooling strategies that helped (optional)</label><input id="heatStrategies" placeholder="cooling vest,cold drinks, afternoon rest, fan ect.."></div>
+<button class="btn primary" onclick="saveHeat()">Save heat check-in</button>
+<div id="heatHistory" style="margin-top:12px"></div>
+<div class="notice" style="margin-bottom:0">💡 Heat tips: pre cool before any activitys, stay hydrated, plan around cooler hours, and consult your care team about your cooling options.</div></div>
+<div class="card rise rise-1"><div class="card-title"><div><h3>💉 Injection site rotation</h3><small>If you self inject a DMT -disease modifying therapy rotating spots protects your skin. Tap a site to log where you injected.MSpace highlights your least recently used area.</small></div></div>
+<div style="display:flex;flex-wrap:wrap;gap:20px">
+<div><b style="font-size:12px;color:var(--muted)">ABDOMEN</b><div style="display:flex;gap:8px;margin-top:6px"><div class="site-dot" data-site="Abdomen L-outer" onclick="logSite(this)">L</div><div class="site-dot" data-site="Abdomen L-inner" onclick="logSite(this)">L</div><div class="site-dot" data-site="Abdomen R-inner" onclick="logSite(this)">R</div><div class="site-dot" data-site="Abdomen R-outer" onclick="logSite(this)">R</div></div></div>
+<div><b style="font-size:12px;color:var(--muted)">ARMS</b><div style="display:flex;gap:8px;margin-top:6px"><div class="site-dot" data-site="Arm L" onclick="logSite(this)">💪</div><div class="site-dot" data-site="Arm R" onclick="logSite(this)">💪</div></div></div>
+<div><b style="font-size:12px;color:var(--muted)">THIGHS</b><div style="display:flex;gap:8px;margin-top:6px"><div class="site-dot" data-site="Thigh L" onclick="logSite(this)">L</div><div class="site-dot" data-site="Thigh R" onclick="logSite(this)">R</div></div></div>
+</div>
+<div id="siteSuggestion" class="notice" style="margin-bottom:0"></div>
+<div id="siteHistory" style="font-size:12px;color:var(--muted)"></div>
+<div class="notice" style="margin-bottom:0">Always follow your official medication guidelines and avoid injecting into irritated skin.</div></div>
+</div>
+<div class="grid two-col">
+<div class="card rise rise-2"><div class="card-title"><div><h3>🌊 Relapse &amp; flare log</h3><small>New or worsening symptoms lasting over 24-48 hours should be reported to your neurologist. Keep a clear record of what happened.</small></div></div>
+<form id="relapseForm"><div class="form-grid"><div class="field"><label>Date noticed</label><input type="date" id="relapseDate" required></div><div class="field"><label>Symptoms involved</label><input id="relapseSymptoms" required placeholder="e.g. new numbness, vision blur, balance"></div><div class="field"><label>Duration so far</label><select id="relapseDuration"><option>Less than 24 hours</option><option>1–2 days</option><option>3–7 days</option><option>Over a week</option><option>Ongoing</option></select></div><div class="field"><label>How did it change? (optional)</label><select id="relapseChange"><option value="Not reported">Not reported</option><option value="Sudden onset">Sudden onset</option><option value="Major new change">Major new change</option><option value="Rapidly worsening">Rapidly worsening</option></select></div><div class="field"><label>Possible trigger</label><select id="relapseTrigger"><option>Unknown</option><option>Infection / illness</option><option>Heat exposure</option><option>Stress</option><option>Missed medication</option><option>Post-partum</option><option>Other</option></select></div><div class="field full"><label>Notes for your neurologist</label><textarea id="relapseNotes" rows="3" placeholder="How it started, what changed, how it affects daily life…"></textarea></div></div>
+<button class="btn primary" type="submit">Save flare record</button></form>
+<div class="notice">⚠️ This tool records your personal experiences to share with your clinician and can't provide medical diagnoses. Contact your MS medical team if you suspect a flare or relapse.</div>
+<div id="relapseHistory"></div></div>
+<div class="card rise rise-2"><div class="card-title"><div><h3>👁️ Vision diary</h3><small>Vision changes can happen with MS. Keep track of what you experience so patterns are easy to describe.</small></div></div>
+<form id="visionForm"><div class="form-grid"><div class="field"><label>Date</label><input type="date" id="visionDate" required></div><div class="field"><label>Which eye?</label><select id="visionEye"><option>Left</option><option>Right</option><option>Both</option><option>Not sure</option></select></div><div class="field full"><label>What did you notice?</label><select id="visionSymptom"><option>Blurriness</option><option>Loss of color vividness</option><option>Pain when moving the eye</option><option>Double vision</option><option>Dimming / gray areas</option><option>Vision loss</option><option>Other</option></select></div><div class="field full"><label>Did it start suddenly or change significantly? (optional)</label><select id="visionChange"><option value="Not reported">Not reported</option><option value="Sudden vision loss">Sudden vision loss</option><option value="Major new vision change">Major new vision change</option><option value="Rapidly worsening vision">Rapidly worsening vision</option></select></div><div class="field"><label>Severity (0–10)</label><input id="visionSeverity" type="number" min="0" max="10" value="3"></div><div class="field"><label>Trend since it began</label><select id="visionTrend"><option>New / not sure yet</option><option>Improving</option><option>Unchanged</option><option>Worsening</option><option>Comes and goes</option></select></div><div class="field full"><label>When did it start? (optional)</label><input id="visionOnset" type="date"></div><div class="field full"><label>Details</label><textarea id="visionNotes" rows="2" placeholder="When it started, how long it lasted, anything that helped…"></textarea></div></div>
+<button class="btn primary" type="submit">Save vision entry</button></form>
+<div id="visionHistory" style="margin-top:12px"></div></div>
+</div>
+<div class="card rise rise-3" style="margin-top:16px"><div class="card-title"><div><h3>🗒️ Appointment prep builder</h3><small>Select what applies and MSpace generates a printable prep list for your upcoming visit.</small></div><span class="pill blue">Printable</span></div>
+<div class="tagrow" id="prepTags">
+<button class="tag" data-p="top 3 symptoms this month">Top 3 symptoms this month</button>
+<button class="tag" data-p="medication side effects">Medication side effects</button>
+<button class="tag" data-p="questions list">My saved questions</button>
+<button class="tag" data-p="recent flare details">Recent flare details</button>
+<button class="tag" data-p="heat sensitivity notes">Heat sensitivity notes</button>
+<button class="tag" data-p="vision diary summary">Vision diary summary</button>
+<button class="tag" data-p="sleep and fatigue pattern">Sleep &amp; fatigue pattern</button>
+<button class="tag" data-p="mood check-in notes">Mood check-in notes</button>
+<button class="tag" data-p="mobility changes">Mobility changes</button>
+<button class="tag" data-p="refill requests">Refill requests</button>
+</div>
+<button class="btn primary" style="margin-top:14px" onclick="buildPrep()">Build my prep sheet</button>
+<div id="prepOutput" style="margin-top:14px"></div></div>
+</section>
+
+<section class="page" id="page-pace">
+<div class="hero green rise"><div><div class="eyebrow" style="color:#e3fff2">PACE, DON'T RACE</div><h2>Make room for your energy.</h2><p>A flexible planner to help balance activity and rest. You set your own pace as there are never any streaks or expectations to maintain here.</p><button class="btn white" onclick="document.getElementById('paceEnergy').focus()">Start with today's energy ↓</button></div><div class="hero-art">🌿</div></div>
+<div class="grid two-col"><div class="card rise rise-1" style="margin-top:16px"><div class="card-title"><h3>Today's energy check-in</h3><span class="pill green">Your estimate</span></div><div class="field"><label>How much energy feels available today?</label><div class="range-row"><input id="paceEnergy" type="range" min="1" max="10" value="5" oninput="document.getElementById('paceEnergyVal').textContent=this.value"><span class="range-num" id="paceEnergyVal">5</span></div></div><div class="progress"><span id="paceProgress" style="width:50%"></span></div><p id="paceMessage" style="font-size:13px;color:var(--muted)">Build in breaks and leave room for any unexpected events.</p><button class="btn primary" onclick="savePace()">Save energy check-in</button></div>
+<div class="card rise rise-1" style="margin-top:16px"><div class="card-title"><h3>Build your day</h3><span>☀️</span></div><form id="taskForm"><div class="field"><label>Activity</label><input id="paceTask" required placeholder=" Grocery trip, reading, call a friend"></div><div class="form-grid"><div class="field"><label>Effort level</label><select id="paceEffort"><option>Low</option><option>Medium</option><option>High</option></select></div><div class="field"><label>When</label><select id="paceWhen"><option>Morning</option><option>Afternoon</option><option>Evening</option><option>Flexible</option></select></div></div><button class="btn primary" type="submit">Add to my plan</button></form></div></div>
+<div class="card rise rise-2" style="margin-top:16px"><div class="card-title"><div><h3>Your flexible plan</h3><small>Move tasks or mark them complete at your own leisure.</small></div><button class="btn ghost small" onclick="clearTasks()">Clear plan</button></div><div id="paceTasks" class="empty">Add an activity to start a flexible plan.</div></div>
+</section>
+
+<section class="page" id="page-reports">
+<div class="hero orange rise"><div><div class="eyebrow" style="color:#fff0e7">YOUR STORY, MADE CLEARER</div><h2>Bring your notes to your next visit.</h2><p>Choose a date range and create a concise summary of everything you've logged including symptoms,flares,heat sensitivity,vision logs,and more.</p></div><div class="hero-art">📊</div></div>
+<div class="card rise rise-1" style="margin-top:16px"><div class="form-grid"><div class="field"><label>From</label><input type="date" id="reportFrom"></div><div class="field"><label>Through</label><input type="date" id="reportTo"></div></div>
+<button class="btn primary" onclick="buildReport()">Generate summary</button> <button class="btn ghost" onclick="downloadReport()">Download text report</button> <button class="btn ghost" onclick="downloadCSV()">Download CSV</button> <button class="btn ghost" onclick="window.print()">Print / Save PDF</button><div id="reportOutput" style="margin-top:18px"></div></div>
+<div class="card rise rise-2" style="margin-top:16px"><div class="card-title"><div><h3>Health trends over time</h3><small>Graphs use saved entries within your selected report date range. Daily flares and medication views show up to the latest 366 days in the range. The written report keeps all of the matching entries.</small></div><span class="pill">Longitudinal view</span></div><div class="report-graphs"><div class="report-graph-card"><h3>Energy &amp; fatigue</h3><p>Check-in ratings, 0–10</p><svg class="timeline-chart" id="reportChart" viewBox="0 0 600 190" preserveAspectRatio="none"></svg></div><div class="report-graph-card"><h3>Mood over time</h3><p>Logged mood labels by date; positions are categories, not a clinical score.</p><svg class="timeline-chart" id="moodChart" viewBox="0 0 600 190" preserveAspectRatio="none"></svg></div><div class="report-graph-card"><h3>Vision over time</h3><p>Reported vision severity, 0–10</p><svg class="timeline-chart" id="visionChart" viewBox="0 0 600 190" preserveAspectRatio="none"></svg></div><div class="report-graph-card"><h3>Flare records over time</h3><p>Number of flare records per date; not a diagnosis of relapse activity.</p><svg class="timeline-chart" id="flareChart" viewBox="0 0 600 190" preserveAspectRatio="none"></svg></div><div class="report-graph-card"><h3>Brain-game performance</h3><p>Relative performance index per game/test (first result = 100%; higher indicates a better relative result). Compare each game only with itself.</p><svg class="timeline-chart" id="gameChart" viewBox="0 0 600 190" preserveAspectRatio="none"></svg><div id="gameLegend" style="display:flex;flex-wrap:wrap;gap:6px 12px;margin-top:4px;font-size:10px;color:var(--muted)"></div></div><div class="report-graph-card"><h3>Medication adherence by day</h3><p>Doses marked taken / scheduled doses. As-needed and unscheduled items are excluded from scheduled totals.</p><svg class="timeline-chart" id="medChart" viewBox="0 0 600 190" preserveAspectRatio="none"></svg></div></div><div class="notice" style="margin-top:12px">Graphs summarize user-entered information and are intended to support discussion with your care team. They do not diagnose MS activity or replace clinical assessment.</div></div>
+<div class="grid two-col rise rise-2" style="margin-top:16px"><div class="card"><div class="card-title"><h3>Energy &amp; fatigue trend</h3><small>Also in Overview</small></div><svg class="chart" id="trendReportChart" viewBox="0 0 600 165" preserveAspectRatio="none"></svg></div>
+<div class="card"><div class="card-title"><h3>Data privacy</h3><span>🔒</span></div><p style="font-size:13px;color:var(--muted)">Your report wil contains only information saved locally on this browser. Review your summary before sharing it with a clinician and others.</p><button class="btn soft" onclick="go('doctor')">Draft an email to doctor ↗</button></div></div>
+</section>
+
+<section class="page" id="page-doctor">
+<div class="grid two-col"><div class="card rise rise-1"><div class="card-title"><div><h3>Write to your care team</h3><small>Create a clear email draft directly in your email app.</small></div><span>✉️</span></div>
+<form id="doctorForm"><div class="field"><label>Your clinician's email address</label><input type="email" id="doctorEmail" placeholder="doctor@clinic.org"></div><div class="field"><label>Clinician / practice name (optional)</label><input id="doctorName" placeholder="Dr. …"></div><div class="field"><label>Email subject</label><input id="doctorSubject" value="MS symptom update and questions"></div><div class="field"><label>What would you like to discuss?</label><select id="doctorTopic"><option>Symptom changes</option><option>Urgent symptom change</option><option>Relapse / flare concern</option><option>Medication question</option><option>Appointment request</option><option>Side effects or concerns</option><option>Follow-up after appointment</option><option>General question</option></select></div><div class="field"><label>Your message</label><textarea id="doctorMessage" rows="7" placeholder="Hello Dr. …&#10;&#10;I wanted to share an update…&#10;&#10;My questions are…"></textarea></div><div class="notice">For privacy, review your message carefully. Your email application will open with only open a draft and nothing is sent automatically.</div><button class="btn primary" type="submit">Open email draft ↗</button> <button class="btn ghost" type="button" onclick="fillDoctorSummary()">Insert recent log summary</button></form>
+</div><div><div class="card rise rise-2"><div class="card-title"><h3>Questions for my next visit</h3><span>🗒️</span></div><form id="questionForm"><div class="field"><label>Add a question</label><input id="questionText" required placeholder="What should I ask my clinician?"></div><button class="btn soft" type="submit">Save question +</button></form><div id="questionList" style="margin-top:12px" class="empty">Questions you save appear here.</div></div>
+<div class="card rise rise-3" style="margin-top:16px"><div class="card-title"><h3>Need urgent help?</h3><span>☎️</span></div><p style="font-size:13px;color:var(--muted)">MSpace is not monitored and cannot provide emergency services. For severe or rapidly worsening symptoms, seek immediate professional medical care.</p><button class="btn ghost" onclick="go('settings')">Add care contacts</button></div></div></div>
+</section>
+
+<section class="page" id="page-wellbeing">
+<div class="hero purple rise"><div><div class="eyebrow" style="color:#fdf0ff">A MOMENT FOR YOU</div><h2>Rest is also productive</h2><p> Helpful tools for a mindful pause whenever you need one.</p></div><div class="hero-art">🪻</div></div>
+<div class="grid three-col" style="margin-top:16px">
+<div class="card rise rise-1"><div class="card-title"><h3>Breathing pause</h3><span>🌬️</span></div><div class="breath"><div class="breath-orb" id="breathOrb">Breathe</div></div><p style="text-align:center;font-size:12px;color:var(--muted)">Follow the gentle breathing circle if comfortable. Stop if you feel dizzy.</p><button class="btn soft" style="width:100%" onclick="toggleBreath()" id="breathButton">Pause animation</button></div>
+<div class="card rise rise-2"><div class="card-title"><h3>Mood check-in</h3><span>💛</span></div><p style="font-size:13px;color:var(--muted)">Rememeber that there is no wrong way to feel. Record how you feel today.</p><div class="tagrow" id="moodTags"><button class="tag" onclick="selectMood(this)">🙂 Steady</button><button class="tag" onclick="selectMood(this)">🌤 Hopeful</button><button class="tag" onclick="selectMood(this)">😟 Anxious</button><button class="tag" onclick="selectMood(this)">🌧 Low</button><button class="tag" onclick="selectMood(this)">😵 Overwhelmed</button></div><div class="field"><label>Anything you'd like to note?</label><textarea id="moodNote" rows="3" placeholder="Optional, just for you"></textarea></div><button class="btn primary" onclick="saveMood()">Save mood note</button><div class="mood-history"><h4 style="margin:14px 0 6px;font-size:13px">Your recent mood entries</h4><div id="moodHistory" class="empty">Your saved mood notes will appear here.</div></div></div>
+<div class="card rise rise-3"><div class="card-title"><h3>A small win</h3><span>✨</span></div><p style="font-size:13px;color:var(--muted)">Wins don't have to be big. What went okay today?</p><div class="field"><textarea id="winText" rows="4" placeholder="I made time to rest…"></textarea></div><button class="btn primary" onclick="saveWin()">Save my win</button><div id="winHistory" style="font-size:12px;color:var(--muted);margin-top:12px"></div></div></div>
+<div class="card rise rise-4" style="margin-top:16px"><div class="card-title"><h3>Mindful movement reminder</h3><span>🌱</span></div><p style="font-size:13px;color:var(--muted)">If your clinician has indicated that movement is appropriate for you then you should consider gentle stretching and taking short rests. Stop immediately if any activity feels unsafe.</p></div>
+</section>
+
+<section class="page" id="page-resources">
+<div class="hero orange rise"><div><div class="eyebrow" style="color:#fff0e7">LEARN AT YOUR OWN PACE</div><h2>Good information. More connection.</h2><p>Explore trusted organizations, video guides, and ways to connect with supportive communities.</p></div><div class="hero-art">📚</div></div>
+
+<div class="section-head rise rise-1" style="margin-top:24px">
+  <div><h3>🎥 Multiple Sclerosis Videos &amp; Expert Insights</h3><p>Educational videos from leading medical organizations and specialists</p></div>
+</div>
+<div class="grid three-col rise rise-1">
+  <div class="resource">
+    <div style="font-size:25px">🏥</div>
+    <b>Mayo Clinic Explains MS</b>
+    <p>A clear overview from Mayo Clinic neurologists covering fundamentals, symptoms, diagnosis, and treatment options.</p>
+    <a href="https://www.youtube.com/watch?v=Z1ibVlGflPs" target="_blank" rel="noopener" class="action-link">Watch Mayo Clinic guide ↗</a>
+  </div>
+  <div class="resource">
+    <div style="font-size:25px">💡</div>
+    <b>Advances in Managing MS</b>
+    <p>Podcast discussion exploring recent advances in disease management and symptom control.</p>
+    <a href="https://www.youtube.com/watch?v=bSDxZQckCwU" target="_blank" rel="noopener" class="action-link">Watch management insights ↗</a>
+  </div>
+  <div class="resource">
+    <div style="font-size:25px">🌿</div>
+    <b>Exercise &amp; Mobility Tips</b>
+    <p>Practical guidance on modifying exercise routines to ease symptoms and manage heat sensitivity.</p>
+    <a href="https://www.youtube.com/watch?v=5O-68VoVvhE" target="_blank" rel="noopener" class="action-link">Watch exercise guide ↗</a>
+  </div>
+</div>
+
+<div class="section-head rise rise-2" style="margin-top:28px">
+  <div><h3>🌐 Trusted Organizations &amp; Learning Hubs</h3><p>External resources for further reading</p></div>
+</div>
+<div class="grid three-col rise rise-2">
+<div class="resource"><div style="font-size:25px">🎗️</div><b>National Multiple Sclerosis Society</b><p>Comprehensive MS education, support services, and community connection opportunities.</p><a href="https://www.nationalmssociety.org/" target="_blank" rel="noopener" class="action-link">Visit resource ↗</a></div>
+<div class="resource"><div style="font-size:25px">🔬</div><b>ClinicalTrials.gov</b><p>Search registered clinical studies. Discuss eligibility and safety with your clinician.</p><a href="https://clinicaltrials.gov/" target="_blank" rel="noopener" class="action-link">Explore studies ↗</a></div>
+<div class="resource"><div style="font-size:25px">🧠</div><b>NINDS MS Overview</b><p>Learn about care options from reputable neurological research institutions.</p><a href="https://www.ninds.nih.gov/health-information/disorders/multiple-sclerosis-ms" target="_blank" rel="noopener" class="action-link">NINDS overview ↗</a></div>
+</div>
+<div class="notice" style="margin-top:16px">The links are provided for learning and do not replace formal medical advice. Discuss any new information or treatment with a qualified doctor.</div>
+</section>
+
+<section class="page" id="page-settings">
+<div class="grid two-col"><div class="card rise rise-1"><div class="card-title"><h3>Your preferences</h3><span>⚙️</span></div><form id="settingsForm"><div class="field"><label>What should we call you?</label><input id="userName" placeholder="Your first name or nickname"></div><div class="field"><label>Doctor / clinic email (saved on this device)</label><input type="email" id="savedDoctorEmail" placeholder="doctor@clinic.org"></div><div class="field"><label>Emergency / trusted contact name</label><input id="contactName" placeholder="Optional"></div><div class="field"><label>Trusted contact phone</label><input id="contactPhone" type="tel" placeholder="Optional"></div><div class="field"><label>Appearance</label><select id="themeSetting"><option value="light">Light</option><option value="dark">Dark</option><option value="auto">Match system</option></select></div><div class="field"><label>Text size</label><select id="textSize"><option value="normal">Standard text</option><option value="large">Larger text</option></select></div><div class="field"><label>Motion</label><select id="motionSetting"><option value="normal">Animations on</option><option value="reduced">Reduce animations</option></select></div><button class="btn primary" type="submit">Save preferences</button></form></div>
+<div class="card rise rise-2"><div class="card-title"><h3>Data &amp; privacy</h3><span>🔐</span></div><p style="font-size:13px;color:var(--muted)">MSpace stores all your entries securely in your browser's local storage on this device. It does not sync to a clinic cloud server or track your data externally. Anyone with access to this browser profile may be able to view saved items.</p><button class="btn soft" onclick="exportData()">Export all app data (JSON)</button><div style="height:9px"></div><button class="btn ghost" onclick="document.getElementById('importFile').click()">Import saved data (JSON)</button><input type="file" id="importFile" accept=".json,application/json" hidden onchange="importData(event)"><div style="height:9px"></div><button class="btn ghost" onclick="clearAllData()" style="color:var(--red)">Delete all local app data</button><div class="notice">This prototype is designed for local privacy. Always secure your personal device with a passcode.</div></div></div>
+</section>
+<div class="footer-note">MSpace is a personal tracker and  not a medical device or substitute for professional care ♡</div>
+</main></div>
+<div class="modal-backdrop" id="helpModal" onclick="if(event.target===this)closeHelp()">
+<div class="modal"><button class="modal-close" onclick="closeHelp()">✕</button>
+<h2>❓ How to navigate MSpace</h2><p class="sub">Every tool explained simply. Use the search box below to find what you need.</p>
+<input class="help-search" id="helpSearch" placeholder="Search tools…  games, reminders, relapse ect." oninput="renderHelp(this.value)">
+<div id="helpList"></div>
+<div class="notice" style="margin-top:14px">💡 Tip: the <b>❓ button</b> at the bottom right opens this guide from anywhere. Use the sidebar to switch sections; your data auto-saves securely to your device.</div>
+</div></div>
+<button class="help-fab" title="Help & navigation" onclick="openHelp()">?</button>
+<div class="urgent-backdrop" id="urgentAlert" role="alertdialog" aria-modal="true" aria-labelledby="urgentTitle" aria-describedby="urgentMessage" onclick="if(event.target===this)dismissUrgentAlert()">
+  <div class="urgent-card" role="document">
+    <div style="font-size:11px;font-weight:850;letter-spacing:1px;text-transform:uppercase;color:#c65a25;margin-bottom:7px">Health caution · Please read</div>
+    <h2 id="urgentTitle">Please seek urgent medical assessment</h2>
+    <p id="urgentMessage">The information you entered describes a change that should be assessed promptly.</p>
+    <div class="urgent-detail" id="urgentDetail"></div>
+    <p><b>Do not wait for your next appointment.</b> MSpace cannot determine the cause or diagnose this change. If symptoms are severe or you cannot get prompt medical help, call your local emergency number or go to an emergency department.</p>
+    <div class="urgent-actions"><button class="btn primary" type="button" onclick="urgentOpenDoctor()">Open Message your doctor ↗</button><button class="urgent-link" type="button" onclick="dismissUrgentAlert()">Dismiss</button></div>
+  </div>
+</div>
+<div class="toast-root" id="toastRoot"></div>
+<script>
+const $=id=>document.getElementById(id);
+const today=()=>new Date().toLocaleDateString('en-CA');
+const key='mspace_v3';
+const defaults={logs:[],events:[],meds:[],medChecks:{},pace:[],tasks:[],questions:[],moods:[],wins:[],notes:[],settings:{},checklist:{},games:{},functionalTests:[],heat:[],sites:[],relapses:[],visions:[],notified:{}};
+let db=loadDB(), calDate=new Date(), selectedDate=today(), reportText='', chosenMood='', gameTimers=[];
+const SERVER_URL = 'http://localhost:3000';
+const VAPID_PUBLIC_KEY = 'Mfp9k8DDVYeX83vbJUa6mOSc-iZMPCVkUPvXY1USgdAK_A8m1bwbPhUyJoVY21znCSWrYY47AfZ5rM3GOsKnEw';
+
+if (!localStorage.getItem('mspace_device')) localStorage.setItem('mspace_device', crypto.randomUUID());
+const deviceId = localStorage.getItem('mspace_device');
+
+function urlBase64ToUint8Array(b64) {
+  const pad = '='.repeat((4 - b64.length % 4) % 4);
+  const raw = atob((b64 + pad).replace(/-/g, '+').replace(/_/g, '/'));
+  return Uint8Array.from([...raw].map(c => c.charCodeAt(0)));
+}
+
+function syncRemindersToServer() {
+  if (!db.settings.pushEnabled) return;
+  fetch(SERVER_URL + '/reminders', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      device: deviceId,
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      meds: db.meds.map(m => ({ id: m.id, name: m.name, dose: m.dose,
+        schedule: m.schedule, times: medTimes(m), weekday: m.weekday })),
+      events: db.events.filter(e => e.date >= today() && e.time)
+        .map(e => ({ id: e.id, title: e.title, date: e.date, time: e.time, type: e.type }))
+    })
+  }).catch(() => {});
+}
+function loadDB(){try{return {...structuredClone(defaults),...JSON.parse(localStorage.getItem(key)||'{}')}}catch(e){return structuredClone(defaults)}}
+function saveDB() {
+  localStorage.setItem(key, JSON.stringify(db));
+  renderAll();
+
+  // Update the server whenever medication or calendar data changes.
+  // Foreground reminders still work if the server is unavailable.
+  syncRemindersToServer();
+}
+function esc(s=''){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function toast(s,long){$('toastRoot').innerHTML='<div class="toast">'+esc(s)+'</div>';clearTimeout(window._tt);window._tt=setTimeout(()=>$('toastRoot').innerHTML='',long?7000:3200)}
+function go(page){gameTimers.forEach(clearInterval);gameTimers=[];document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id==='page-'+page));document.querySelectorAll('[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===page));$('sidebar').classList.remove('open');const titles={dashboard:'A little more clarity, every day.',whatisms:'Understanding multiple sclerosis.',symptoms:'Listen to what your body is telling you.',calendar:'Your health, at a glance.',medications:'Your medication organizer with working reminders.',games:'Gentle games and optional performance-test timers.',toolkit:'Practical tools designed for life with MS.',pace:'Make room for your energy.',reports:'A clearer picture for your care team.',doctor:'Your voice belongs in your care.',wellbeing:'A moment just for you.',resources:'Learn, connect, and feel supported.',settings:'Your space, your choices.'};$('pageTitle').textContent=titles[page]||'MSpace';window.scrollTo({top:0,behavior:'smooth'});if(page==='reports'){renderReportGraphs($('reportFrom').value||'0000-00-00',$('reportTo').value||'9999-99-99');}}
+document.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.page)));
+$('dateGreeting').textContent=new Date().toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'}).toUpperCase();
+$('logDate').value=today();$('relapseDate').value=today();$('visionDate').value=today();$('reportTo').value=today();$('reportFrom').value=new Date(Date.now()-6*86400000).toLocaleDateString('en-CA');
+function applyTheme(t){if(t==='auto')t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.dataset.theme=t;$('themeBtn').textContent=t==='dark'?'☀️':'🌙'}
+function toggleTheme(){const cur=document.documentElement.dataset.theme==='dark'?'light':'dark';db.settings.theme=cur;localStorage.setItem(key,JSON.stringify(db));applyTheme(cur)}
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{if((db.settings.theme||'light')==='auto')applyTheme('auto')});
+const HELP=[
+{p:'dashboard',t:'🏠 Overview dashboard',d:'Your home base: today\'s energy, stats, a 7-day energy/fatigue chart, quick actions, medication due list, and a gentle daily checklist.',w:'Sidebar → Overview'},
+{p:'whatisms',t:'🧠 What is MS?',d:'A plain-language page explaining multiple sclerosis: what it is, common symptoms, the three types, who it affects, and how it is managed.',w:'Sidebar → What is MS?'},
+{p:'symptoms',t:'📝 Symptom tracker',d:'Log energy, fatigue, 8 symptom sliders (pain, numbness, vision, balance, bladder/bowel, cog fog, spasms, dizziness), mood, sleep, context, and notes. All entries are stored locally on your device.',w:'Sidebar → Symptom tracker'},
+{p:'calendar',t:'🗓️ Health calendar',d:'Month view with colored dots for logs, appointments, medications, and notes. Click any day to view or add events.',w:'Sidebar → Health calendar'},
+{p:'medications',t:'💊 Medications & working reminders',d:'Add medications with reminder times. While MSpace is open, you will receive an in-app alert and browser notification at the set time, plus daily check-in buttons.',w:'Sidebar → Medications'},
+{p:'games',t:'🧩 Brain games',d:'Six mini-games plus the Nine-Hole Peg Test and Timed 25-Foot Walk timer aids. Clinical tests are not diagnostic tools; follow your clinician’s protocol. Best scores and informal timings are saved locally.',w:'Sidebar → Brain games'},
+{p:'toolkit',t:'🔥 Heat sensitivity log',d:'Rate today\'s heat exposure and its effect on your symptoms, and save cooling strategies that helped you.',w:'Sidebar → MS toolkit'},
+{p:'toolkit',t:'💉 Injection site rotation',d:'Tap a body site to log it. MSpace tracks your recent spots and suggests your least-recently-used area for rotation.',w:'Sidebar → MS toolkit'},
+{p:'toolkit',t:'🌊 Relapse & flare log',d:'Record new or worsening symptoms, duration, and possible triggers to share clearly with your neurologist.',w:'Sidebar → MS toolkit'},
+{p:'toolkit',t:'👁️ Vision diary',d:'Track which eye, what changed (blur, color loss, pain, double vision), and helpful personal details.',w:'Sidebar → MS toolkit'},
+{p:'toolkit',t:'🗒️ Appointment prep builder',d:'Select what to bring up and MSpace generates a printable prep sheet combining your saved data.',w:'Sidebar → MS toolkit'},
+{p:'pace',t:'🌿 Energy & pacing',d:'Rate your available energy, get pacing suggestions, and build a flexible activity plan with effort levels.',w:'Sidebar → Energy & pacing'},
+{p:'reports',t:'📊 Health reports',d:'Generate a date-ranged summary report (TXT download, print), CSV export of all check-ins, and an energy trend chart.',w:'Sidebar → Health reports'},
+{p:'doctor',t:'💌 Message your doctor',d:'Drafts an email in your mail app with a topic and optional auto-inserted summary of recent check-ins, plus a saved questions list.',w:'Sidebar → Message your doctor'},
+{p:'wellbeing',t:'❋ Wellbeing studio',d:'Animated breathing orb, private mood check-ins, and a small wins journal.',w:'Sidebar → Wellbeing studio'},
+{p:'resources',t:'📚 Learn & connect',d:'Explore MS educational videos, trusted organizations, clinical trials, and helpful connection resources.',w:'Sidebar → Learn & connect'},
+{p:'settings',t:'⚙️ Settings & privacy',d:'Your name, clinician email, emergency contact, theme, text size, motion preferences, plus JSON backup and local data deletion.',w:'Sidebar → Settings & privacy'}];
+function openHelp(){$('helpModal').classList.add('open');renderHelp($('helpSearch').value)}
+function closeHelp(){$('helpModal').classList.remove('open')}
+function renderHelp(q=''){q=q.toLowerCase();$('helpList').innerHTML=HELP.filter(h=>!q||h.t.toLowerCase().includes(q)||h.d.toLowerCase().includes(q)).map(h=>`<div class="help-item"><b>${h.t} <kbd>${h.w}</kbd></b><p>${h.d}</p></div>`).join('')||'<div class="empty">No tools match your search.</div>'}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeHelp();if(e.key==='?'&&!e.target.matches('input,textarea'))openHelp()});
+const symptomNames=['Pain','Numbness / tingling','Vision changes','Walking / balance','Bladder / bowel','Cognitive fog','Spasms / stiffness','Dizziness'];
+$('symptomSliders').innerHTML=symptomNames.map((s,i)=>`<div class="symptom-item" id="symWrap${i}"><label for="sym${i}">${s}<span id="sym${i}Val" style="color:var(--orange)">0</span></label><input id="sym${i}" type="range" min="0" max="10" value="0" oninput="$('sym${i}Val').textContent=this.value;$('symWrap${i}').classList.toggle('hot',this.value>=7)"><small>Intensity: 0–10</small></div>`).join('');
+function rangeVal(id){$(id+'Val').textContent=$(id).value}
+function resetSymptomForm(){$('symptomForm').reset();$('logDate').value=today();rangeVal('energy');rangeVal('fatigue');symptomNames.forEach((_,i)=>{$('sym'+i+'Val').textContent=0;$('symWrap'+i).classList.remove('hot')})}
+$('symptomForm').addEventListener('submit',e=>{e.preventDefault();let symptoms={};symptomNames.forEach((s,i)=>symptoms[s]=+$('sym'+i).value);const newLog={id:Date.now(),date:$('logDate').value||today(),time:$('logTime').value,energy:+$('energy').value,fatigue:+$('fatigue').value,symptoms,mood:$('mood').value,sleep:$('sleep').value,context:$('weather').value,mobility:$('mobility').value,notes:$('symptomNotes').value};const prior=[...db.logs].filter(x=>x.date<=newLog.date).sort((a,b)=>(b.date||'').localeCompare(a.date||'')||(b.id||0)-(a.id||0))[0];db.logs.push(newLog);const urgent=getRapidSymptomChange(newLog,prior);saveDB();toast('Check-in saved securely to your device.');if(urgent)showUrgentAlert('neurological',urgent)});
+function toggleTask(el){el.classList.toggle('done');el.textContent=el.classList.contains('done')?'✓':'';let n=document.querySelectorAll('#checklist .check.done').length;db.checklist[today()]=n;localStorage.setItem(key,JSON.stringify(db));$('taskProgress').style.width=n/4*100+'%';$('taskCount').textContent=n+' of 4 checked'}
+function saveQuickNote(){let t=$('quickNote').value.trim();if(!t)return toast('Write a note first.');db.notes.push({id:Date.now(),date:today(),time:new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}),text:t});$('quickNote').value='';$('quickNoteStatus').textContent='Saved just now';saveDB();toast('Quick note saved. It is listed below and on today’s calendar.')}
+function deleteQuickNote(index){if(!confirm('Delete this quick note? This cannot be undone.'))return;const i=Number(index);if(!Number.isInteger(i)||i<0||i>=db.notes.length)return;db.notes.splice(i,1);saveDB();toast('Quick note deleted.')}
+function renderQuickNotes(){const el=$('quickNoteHistory');if(!el)return;const notes=(db.notes||[]).map((n,i)=>({...n,_idx:i})).sort((a,b)=>(b.date||'').localeCompare(a.date||'')||(b._idx-a._idx));el.innerHTML=notes.length?notes.map(n=>`<div class="event"><div class="eventicon">📝</div><div style="min-width:0;flex:1"><b>${esc(n.date||'Date not recorded')}${n.time?' · '+esc(n.time):''}</b><p style="font-size:12px;margin:4px 0;white-space:pre-wrap;overflow-wrap:anywhere">${esc(n.text||'')}</p></div><button class="action-link" title="Delete quick note" onclick="deleteQuickNote(${n._idx})">Delete</button></div>`).join(''):'<div class="empty">No quick notes yet. Write one above and choose Save note.</div>'}
+function drawChart(id){let svg=$(id);if(!svg)return;let data=[];for(let i=6;i>=0;i--){let d=new Date();d.setDate(d.getDate()-i);let ds=d.toLocaleDateString('en-CA');let l=db.logs.filter(x=>x.date===ds).slice(-1)[0];data.push({label:d.toLocaleDateString(undefined,{weekday:'short'}),energy:l?.energy??null,fatigue:l?.fatigue??null})}let grid=[0,1,2,3,4].map(i=>`<line x1="42" y1="${15+i*31}" x2="585" y2="${15+i*31}" stroke="var(--line)" stroke-dasharray="3 5"/><text x="22" y="${19+i*31}" fill="var(--muted)" font-size="10">${10-i*2}</text>`).join('');function path(k){let pts=data.map((d,i)=>d[k]==null?null:[50+i*86,(10-d[k])*12+18]);let out='',started=false;pts.forEach(p=>{if(!p){started=false;return}out+=(started?' L':' M')+p[0]+' '+p[1];started=true});return out}let dots=(k,color)=>data.map((d,i)=>d[k]==null?'':`<circle cx="${50+i*86}" cy="${(10-d[k])*12+18}" r="4" fill="${color}"/>`).join('');svg.innerHTML=grid+`<path d="${path('energy')}" fill="none" stroke="#f0692a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="${path('fatigue')}" fill="none" stroke="#ffc49f" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>${dots('energy','#f0692a')}${dots('fatigue','#ffc49f')}`+data.map((d,i)=>`<text x="${50+i*86}" y="162" fill="var(--muted)" font-size="10" text-anchor="middle">${d.label}</text>`).join('')}
+function renderDashboard(){let logs=db.logs.filter(l=>l.date===today());$('energyStat').innerHTML=(logs.length?logs[logs.length-1].energy:'—')+'<span style="font-size:14px;color:var(--muted)">/10</span>';$('entryStat').textContent=db.logs.length;$('medStat').innerHTML=Object.values(db.medChecks).filter(c=>c.date===today()&&c.status==='Taken').length+'<span style="font-size:14px;color:var(--muted)"> today</span>';let next=db.events.filter(e=>e.type==='Appointment'&&e.date>=today()).sort((a,b)=>a.date.localeCompare(b.date))[0];$('nextAppt').textContent=next?new Date(next.date+'T12:00:00').toLocaleDateString(undefined,{month:'short',day:'numeric'}):'Not set';let name=db.settings.name;$('hello').textContent=name?`Hello, ${name}. How are you feeling today?`:'Hello there. How are you feeling today?';$('avatar').textContent=name?name[0].toUpperCase():'S';drawChart('trendChart');let n=db.checklist[today()]||0;document.querySelectorAll('#checklist .check').forEach((b,i)=>{b.classList.toggle('done',i<n);b.textContent=i<n?'✓':''});$('taskProgress').style.width=n/4*100+'%';$('taskCount').textContent=n+' of 4 checked';renderDueToday();renderCalendarReminders();}
+
+function renderDueToday() {
+  const box = $('dueTodayCard');
+  if (!box) return;
+
+  const now = new Date();
+  const date = localDateString(now);
+  const current = now.getHours() * 60 + now.getMinutes();
+  const weekday = now.getDay();
+
+  if (!db.meds.length) {
+    box.innerHTML =
+      '<div class="empty">Add medications with reminder times to see them here.</div>';
+    return;
+  }
+
+  const rows = [];
+
+  db.meds.forEach(m => {
+    
+    if (
+      m.schedule === 'Weekly' &&
+      Number(m.weekday ?? 1) !== weekday
+    ) {
+      return;
+    }
+
+  
+    medTimes(m).forEach(t => {
+      const key = medDoseKey(m.id, date, t);
+      const check = db.medChecks[key];
+
+    
+      if (check && ['Taken', 'Skipped'].includes(check.status)) {
+        return;
+      }
+
+      const [hh, mm] = t.split(':').map(Number);
+      const mins = hh * 60 + mm;
+      const delta = mins - current;
+
+      const status =
+        delta > 0 ? 'Upcoming' :
+        delta === 0 ? 'Due now' :
+        'Overdue';
+
+      rows.push({ m, t, mins, status });
+    });
+  });
+
+  rows.sort((a, b) => a.mins - b.mins);
+
+  box.innerHTML = rows.length
+    ? rows.map(r => `
+      <div class="med-row">
+        <div class="med-symbol">💊</div>
+
+        <div style="min-width:0;flex:1">
+          <b>${esc(r.m.name)}</b>
+
+          <small>
+            ${esc(r.m.dose || 'As prescribed')}
+            ·
+            ${r.status === 'Upcoming' ? 'Due at' : 'Scheduled for'}
+            ${esc(r.t)}
+          </small>
+
+          <span class="pill ${
+            r.status === 'Overdue' ? 'gray' :
+            r.status === 'Due now' ? '' : 'blue'
+          }">${r.status}</span>
+        </div>
+
+        <button class="btn small primary"
+          onclick="markMed(${r.m.id},'Taken','${r.t}')">
+          Taken
+        </button>
+
+        <button class="btn small ghost"
+          onclick="markMed(${r.m.id},'Skipped','${r.t}')">
+          Skipped
+        </button>
+      </div>
+    `).join('')
+    : '<div class="empty">All scheduled doses are checked in, or no timed doses are scheduled for today.</div>';
+}
+
+function renderCalendarReminders() {
+  const missed = $('missedCalendarCard');
+  const upcoming = $('upcomingCalendarCard');
+
+  if (!missed || !upcoming) return;
+
+  const now = new Date();
+
+  const timed = (db.events || [])
+    .filter(e => e.date && e.time)
+    .map(e => ({
+      ...e,
+      _when: new Date(e.date + 'T' + e.time + ':00')
+    }))
+    .filter(e => !Number.isNaN(e._when.getTime()))
+    .sort((a, b) => a._when - b._when);
+
+  // Completed events should no longer appear in reminders.
+  const pending = timed.filter(
+    e => e.status !== 'Done' && !e.done
+  );
+
+  const past = pending.filter(e => e._when <= now);
+  const future = pending.filter(e => e._when > now);
+
+  function eventRow(e) {
+    const isPast = e._when <= now;
+
+    const status = isPast
+      ? (now - e._when < 60000 ? 'Due now' : 'Missed / overdue')
+      : 'Coming up';
+
+    return `
+      <div class="med-row">
+        <div class="med-symbol">📅</div>
+
+        <div style="min-width:0;flex:1">
+          <b>${esc(e.title || e.type || 'Calendar event')}</b>
+
+          <small>
+            ${esc(e.type || 'Event')}
+            · ${esc(e.date)} at ${esc(e.time)}
+            ${e.details ? ' · ' + esc(e.details) : ''}
+          </small>
+
+          <span class="pill ${isPast ? 'gray' : 'blue'}">
+            ${status}
+          </span>
+        </div>
+
+        <button class="btn small primary"
+          onclick="markCalendarEvent(${e.id})">
+          Done
+        </button>
+      </div>
+    `;
+  }
+
+  missed.innerHTML = past.length
+    ? past.map(eventRow).join('')
+    : '<div class="empty">No missed calendar events. You’re all caught up.</div>';
+
+  upcoming.innerHTML = future.length
+    ? future.map(eventRow).join('')
+    : '<div class="empty">No upcoming timed events. Add one in the Health calendar.</div>';
+}
+
+function markCalendarEvent(id) {
+  const event = db.events.find(
+    e => String(e.id) === String(id)
+  );
+
+  if (!event) return;
+
+  event.status = 'Done';
+  event.done = true;
+
+  saveDB();
+  toast('Calendar event marked done.');
+}
+
+
+function renderSymptomHistory(){let logs=[...db.logs].sort((a,b)=>b.date.localeCompare(a.date)||b.id-a.id);$('historyCount').textContent=logs.length+' entries';$('symptomHistory').innerHTML=logs.length?logs.slice(0,8).map(l=>`<div class="event"><div class="eventicon">♡</div><div style="min-width:0;flex:1"><b>${esc(l.date)} · ${esc(l.time)}</b><small>Energy ${l.energy}/10 · Fatigue ${l.fatigue}/10 · Mood: ${esc(l.mood)}</small>${l.notes?`<p style="font-size:12px;margin:5px 0 0;overflow-wrap:anywhere">${esc(l.notes)}</p>`:''}</div><button class="action-link" onclick="deleteLog(${l.id})">Delete</button></div>`).join(''):'<div class="empty">Your saved check-ins will appear here.</div>'}
+function deleteLog(id){db.logs=db.logs.filter(l=>l.id!==id);saveDB();toast('Entry deleted.')}
+function changeMonth(n){calDate.setMonth(calDate.getMonth()+n);renderCalendar()}
+function calendarMarkColor(t){const colors={sym:'#e87932',mood:'#c026d3',vision:'#0891b2',flare:'#dc2626',heat:'#b45309',site:'#be185d',game:'#6d28d9',medtaken:'#0f766e',Appointment:'#2563eb',Medication:'#15803d','Personal note':'#7c3aed',quicknote:'#9333ea',Symptom:'#14b8a6',Activity:'#64748b'};return colors[t]||'#475569'}
+function renderCalendar(){let y=calDate.getFullYear(),m=calDate.getMonth();$('monthLabel').textContent=calDate.toLocaleDateString(undefined,{month:'long',year:'numeric'});let first=new Date(y,m,1),start=first.getDay(),days=new Date(y,m+1,0).getDate(),prev=new Date(y,m,0).getDate();let out=['S','M','T','W','T','F','S'].map(x=>`<div class="weekday">${x}</div>`).join('');for(let i=0;i<42;i++){let num,date,muted=false;if(i<start){num=prev-start+i+1;date=new Date(y,m-1,num);muted=true}else if(i>=start+days){num=i-start-days+1;date=new Date(y,m+1,num);muted=true}else{num=i-start+1;date=new Date(y,m,num)}let ds=date.toLocaleDateString('en-CA');let marks=[];if(db.logs.some(x=>x.date===ds))marks.push('sym');if((db.moods||[]).some(x=>x.date===ds))marks.push('mood');if((db.visions||[]).some(x=>x.date===ds))marks.push('vision');if((db.relapses||[]).some(x=>x.date===ds))marks.push('flare');if((db.heat||[]).some(x=>x.date===ds))marks.push('heat');if((db.sites||[]).some(x=>x.date===ds))marks.push('site');if((db.notes||[]).some(x=>x.date===ds))marks.push('quicknote');if((db.gameHistory||[]).some(x=>String(x.date).slice(0,10)===ds)||(db.functionalTests||[]).some(x=>String(x.date).slice(0,10)===ds))marks.push('game');if(Object.values(db.medChecks||{}).some(x=>x.date===ds))marks.push('medtaken');db.events.filter(e=>e.date===ds).forEach(e=>marks.push(e.type));let dots=marks.map(t=>`<i class="mark" title="${esc(t)}" aria-label="${esc(t)}" style="background:${calendarMarkColor(t)}"></i>`).join('');out+=`<button class="day ${muted?'muted':''} ${ds===today()?'today':''} ${ds===selectedDate?'selected':''}" aria-label="${esc(ds)}${marks.length?', '+marks.length+' health markers':''}" onclick="selectDate('${ds}')"><span class="n">${num}</span><span class="marks">${dots}</span></button>`}$('calendarGrid').innerHTML=out;renderDayEvents()}
+function selectDate(ds){selectedDate=ds;renderCalendar()}
+function renderDayEvents(){$('selectedDateLabel').textContent=new Date(selectedDate+'T12:00:00').toLocaleDateString(undefined,{weekday:'long',month:'short',day:'numeric'});let items=[...db.events.filter(e=>e.date===selectedDate).map(e=>({...e,kind:e.type,deleteType:'event'})),...db.logs.filter(l=>l.date===selectedDate).map(l=>({id:l.id,deleteType:'log',type:'Symptom',kind:'Symptom log',title:'Symptom check-in',time:l.time,details:`Energy ${l.energy}/10 · Fatigue ${l.fatigue}/10 · Mood ${l.mood||'not recorded'}`})),...(db.moods||[]).filter(m=>m.date===selectedDate).map(m=>({id:m.id,deleteType:'mood',type:'Mood',kind:'Mood',title:'Mood: '+m.mood,details:m.note})),...(db.visions||[]).filter(v=>v.date===selectedDate).map(v=>({id:v.id,deleteType:'vision',type:'Vision',kind:'Vision entry',title:`Vision: ${v.eye} eye — ${v.symptom}`,details:`Severity ${v.severity??'not rated'}/10 · ${v.trend||'Trend not recorded'}${v.notes?' · '+v.notes:''}`})),...(db.relapses||[]).filter(r=>r.date===selectedDate).map(r=>({id:r.id,deleteType:'flare',type:'Flare',kind:'Flare record',title:'Flare: '+r.symptoms,details:`${r.duration} · ${r.change||'Change not recorded'}${r.notes?' · '+r.notes:''}`})),...(db.heat||[]).filter(h=>h.date===selectedDate).map(h=>({id:h.id,deleteType:'heat',type:'Heat',kind:'Heat check-in',title:'Heat exposure: '+h.exposure+'/4',details:`${h.effect}${h.strategies?' · '+h.strategies:''}`})),...(db.sites||[]).filter(x=>x.date===selectedDate).map(x=>({id:x.id,deleteType:'site',type:'Site',kind:'Injection site',title:'Injection site: '+x.site,time:x.time,details:'Recorded injection site rotation entry'})),...(db.wins||[]).filter(x=>x.date===selectedDate).map(x=>({id:x.id,deleteType:'win',type:'Personal win',kind:'Personal win',title:'Small win',details:x.text})),...(db.notes||[]).map((x,i)=>({...x,_noteIndex:i})).filter(x=>x.date===selectedDate).map(x=>({id:x._noteIndex,noteIndex:x._noteIndex,deleteType:'note',type:'Quick note',kind:'Quick note',title:'Quick note',details:x.text})),...(db.gameHistory||[]).filter(g=>String(g.date).slice(0,10)===selectedDate).map(g=>({id:g.id,deleteType:'game',type:'Game',kind:'Brain game',title:g.label,details:`${g.score} ${g.unit}`})),...(db.functionalTests||[]).filter(g=>String(g.date).slice(0,10)===selectedDate).map(g=>({id:g.id,deleteType:'test',type:'Game',kind:'Functional test',title:g.type==='peg'?'Nine-Hole Peg Test':'Timed 25-Foot Walk',details:`${g.seconds}s ${g.detail||''}`})),...Object.entries(db.medChecks||{}).filter(([key,c])=>c.date===selectedDate).map(([key,c])=>({id:key,deleteType:'medcheck',type:'Medication',kind:'Medication check-in',title:`${c.status}: ${db.meds.find(m=>m.id===c.id)?.name||'Medication'}`,time:c.time,details:c.scheduledTime?'Scheduled for '+c.scheduledTime:''}))].sort((a,b)=>(a.time||'').localeCompare(b.time||''));$('dayEvents').innerHTML=items.length?items.map(e=>`<div class="event"><div class="eventicon">${e.kind==='Appointment'?'🩺':e.kind==='Medication'||e.kind==='Medication check-in'?'💊':e.kind==='Symptom'||e.kind==='Symptom log'?'♡':e.kind==='Mood'?'🙂':e.kind==='Vision entry'?'👁️':e.kind==='Flare record'?'🌊':e.kind==='Brain game'||e.kind==='Functional test'?'🧠':e.kind==='Heat check-in'?'🔥':e.kind==='Quick note'?'📝':'📌'}</div><div style="flex:1;min-width:0"><b>${esc(e.title||e.kind)}</b><small>${esc(e.time||'Time not set')} · ${esc(e.kind||e.type)}</small>${e.details?`<p style="font-size:12px;margin:4px 0;overflow-wrap:anywhere">${esc(e.details)}</p>`:''}</div><button class="action-link" title="Delete this entry" aria-label="Delete ${esc(e.title||e.kind)}" onclick="deleteTrackedRecord('${e.deleteType}','${esc(String(e.id))}')">×</button></div>`).join(''):'<div class="empty">Nothing logged for this date yet. Add an event below.</div>'}
+function deleteTrackedRecord(type,id){if(!confirm('Delete this saved entry? This cannot be undone.'))return;const same=(x)=>String(x.id)===String(id);if(type==='event')db.events=db.events.filter(x=>!same(x));else if(type==='log')db.logs=db.logs.filter(x=>!same(x));else if(type==='mood')db.moods=db.moods.filter(x=>!same(x));else if(type==='vision')db.visions=db.visions.filter(x=>!same(x));else if(type==='flare')db.relapses=db.relapses.filter(x=>!same(x));else if(type==='heat')db.heat=db.heat.filter(x=>!same(x));else if(type==='site')db.sites=db.sites.filter(x=>!same(x));else if(type==='win')db.wins=db.wins.filter(x=>!same(x));else if(type==='note'){const idx=Number(id);if(Number.isInteger(idx)&&idx>=0&&idx<db.notes.length)db.notes.splice(idx,1)}else if(type==='game')db.gameHistory=db.gameHistory.filter(x=>!same(x));else if(type==='test')db.functionalTests=db.functionalTests.filter(x=>!same(x));else if(type==='medcheck')delete db.medChecks[id];saveDB();toast('Entry deleted.')}
+$('eventForm').addEventListener('submit',e=>{e.preventDefault();db.events.push({id:Date.now(),date:selectedDate,type:$('eventType').value,title:$('eventTitle').value.trim(),time:$('eventTime').value,details:$('eventDetails').value});$('eventForm').reset();saveDB();toast('Added to your health calendar.')});
+function deleteEvent(id){db.events=db.events.filter(e=>e.id!==id);saveDB();toast('Calendar event removed.')}
+function updateMedTimeFields(){const schedule=$('medSchedule').value,needsTime=!['As needed','Infusion / appointment','Custom — see notes'].includes(schedule);$('medTime').required=needsTime;$('medTime').disabled=!needsTime;$('medTime2').required=schedule==='Twice daily';$('medTime2').disabled=schedule!=='Twice daily';$('medWeekday').disabled=schedule!=='Weekly';}
+$('medSchedule').addEventListener('change',updateMedTimeFields);updateMedTimeFields();
+$('medForm').addEventListener('submit',e=>{e.preventDefault();const schedule=$('medSchedule').value,time=$('medTime').value,time2=$('medTime2').value;if(schedule==='Twice daily'&&(!time||!time2||time2===time))return toast('For twice-daily reminders, add two different reminder times.');const med={id:Date.now(),name:$('medName').value.trim(),dose:$('medDose').value,time:['As needed','Infusion / appointment','Custom — see notes'].includes(schedule)?'':time,time2:schedule==='Twice daily'?time2:'',schedule,weekday:Number($('medWeekday').value),notes:$('medNotes').value};db.meds.push(med);$('medForm').reset();saveDB();toast(medTimes(med).length?'Medication added — reminder time(s): '+medTimes(med).join(' and ')+'.':'Medication added. Follow your prescription and use the calendar for infusion/appointment dates.');updateMedTimeFields();});
+function medTimes(m){if(['As needed','Infusion / appointment','Custom — see notes'].includes(m.schedule))return [];return [m.time,m.schedule==='Twice daily'?m.time2:''].filter(Boolean)}
+function localDateString(date = new Date()) {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+}
+
+async function showMSpaceNotification(title, body, tag) {
+  if (!('Notification' in window) ||
+      Notification.permission !== 'granted') {
+    toast(`${title}: ${body}`);
+    return;
+  }
+
+  try {
+    if ('serviceWorker' in navigator) {
+      const reg = await navigator.serviceWorker.ready;
+      await reg.showNotification(title, { body, tag });
+    } else {
+      new Notification(title, { body, tag });
+    }
+  } catch (err) {
+    console.error('Could not show notification:', err);
+    toast(`${title}: ${body}`);
+  }
+}
+
+function checkReminders() {
+  // Refresh in-app reminders; no browser pop-up needed.
+  renderDueToday();
+  renderCalendarReminders();
+}
+
+// Refresh reminders every 15 seconds while the page is open.
+if (!window.mspaceReminderTimer) {
+  window.mspaceReminderTimer = setInterval(
+    checkReminders,
+    15000
+  );
+}
+
+// Check every 15 seconds while the page is open.
+if (!window.mspaceReminderTimer) {
+  window.mspaceReminderTimer = setInterval(checkReminders, 15000);
+}
+function medDoseKey(id,date,time){return id+'_'+date+'_'+(time||'default')}
+function markMed(id,status,timeKey='default'){const date=today(),key=medDoseKey(id,date,timeKey);db.medChecks[key]={id,date,status,time:new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}),scheduledTime:timeKey==='default'?'':timeKey};saveDB();toast('Medication check-in recorded: '+status+'.')}
+function deleteMed(id){db.meds=db.meds.filter(m=>m.id!==id);saveDB();toast('Medication removed.')}
+function renderMeds(){$('medListCount').textContent=db.meds.length+' saved';$('medList').innerHTML=db.meds.length?db.meds.map(m=>`<div class="med-row"><div class="med-symbol">💊</div><div style="min-width:0"><b>${esc(m.name)}</b><small>${esc(m.dose||'Dose as prescribed')} · ${esc(m.schedule)}${medTimes(m).length?' · ⏰ '+medTimes(m).map(esc).join(' / '):''}${m.schedule==='Weekly'?' · '+['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][Number(m.weekday??1)]:''}</small>${m.notes?`<small style="display:block">${esc(m.notes)}</small>`:''}</div><button class="action-link" onclick="deleteMed(${m.id})">Remove</button></div>`).join(''):'<div class="empty">Add a medication to organize your list.</div>';let checks=db.meds.map(m=>{let times=medTimes(m);if(!times.length)times=['default'];return times.map(t=>{let c=db.medChecks[medDoseKey(m.id,today(),t)]||(!m.time?db.medChecks[m.id+'_'+today()]:null);return `<div class="med-row"><div class="med-symbol">⏰</div><div><b>${esc(m.name)}</b><small>${t!=='default'?'Reminder at '+esc(t)+' · ':''}${c?esc(c.status+' at '+c.time):'No check-in recorded'+(t!=='default'?' for '+t:'')+' today'}</small></div><button class="btn small ${c?.status==='Taken'?'soft':'primary'}" onclick="markMed(${m.id},'Taken','${t}')">Taken</button><button class="btn small ghost" onclick="markMed(${m.id},'Skipped','${t}')">Skipped</button></div>`}).join('')}).join('');$('medCheckins').innerHTML=checks||'<div class="empty">Add medications to see check-ins here.</div>';renderDueToday()}
+
+function notifLabel() {
+  const status = $('notifStatus');
+
+  // The notification status element may not exist in this version.
+  if (!status) return;
+
+  if (!('Notification' in window)) {
+    status.textContent = 'Not supported in this browser';
+    return;
+  }
+
+  const permission = Notification.permission;
+
+  status.textContent =
+    permission === 'granted' && db.settings.pushEnabled
+      ? 'Notifications enabled'
+      : permission === 'granted'
+        ? 'Permission granted'
+        : permission === 'denied'
+          ? 'Notifications blocked by browser'
+          : 'Notifications not enabled';
+}
+
+async function enableNotifications(){
+  if (!('serviceWorker' in navigator)) return toast('Notifications not supported in this browser.');
+  try {
+    const perm = await Notification.requestPermission();
+    if (perm !== 'granted') { notifLabel(); return toast('Permission not granted.'); }
+    const reg = await navigator.serviceWorker.register('./sw.js');
+    await navigator.serviceWorker.ready;
+    if (!VAPID_PUBLIC_KEY) {
+  throw new Error('MISSING VAPID KEY');
+}
+
+let sub = await reg.pushManager.getSubscription();
+
+if (!sub) {
+  sub = await reg.pushManager.subscribe({
+    userVisibleOnly: true,
+    applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
+  });
+}
+    await fetch(SERVER_URL + '/subscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...sub.toJSON(), deviceId })
+    });
+    db.settings.pushEnabled = true;
+    localStorage.setItem(key, JSON.stringify(db));
+    notifLabel();
+    syncRemindersToServer();
+    toast('Notifications enabled. Keep the reminder server running for background alerts.');
+  } catch (e) {
+    console.error(e);
+    toast('Push setup failed: ' + e.message);
+  }
+}
+
+</script><script>
+const EMOJIS=['🌻','🦋','🍊','🌊','🍇','🌵','🐢','🍓'];
+function bestScore(g){let b=db.games[g];if(b==null)return '';let label=(g==='peg'||g==='walk')?'Best time: '+Number(b).toFixed(2)+' s':'Best: '+b;return `<span class="best">🏆 ${label}</span>`}
+function renderBestScores(){['memory','sequence','reaction','words','math','pattern','peg','walk'].forEach(g=>{let el=$('best-'+g);if(el)el.innerHTML=bestScore(g)})}
+function saveScore(g,v,higherBetter=true){
+ db.gameHistory=db.gameHistory||[];
+ const labels={memory:'Memory Match',sequence:'Color Sequence',reaction:'Reaction Time',words:'Word Recall',math:'Math Sprint',pattern:'Pattern Play'};
+ db.gameHistory.push({id:Date.now()+Math.random(),game:g,label:labels[g]||g,score:Number(v),unit:g==='memory'?'moves':g==='reaction'?'ms':g==='words'?'words recalled':g==='math'?'correct answers':'rounds',date:new Date().toISOString(),higherBetter});
+ if(db.gameHistory.length>300)db.gameHistory=db.gameHistory.slice(-300);
+ let b=db.games[g];if(b==null||(higherBetter?v>b:v<b)){db.games[g]=v;localStorage.setItem(key,JSON.stringify(db));renderAll();toast('🏆 New personal best!')}else{localStorage.setItem(key,JSON.stringify(db));renderGameHistory();renderBestScores()}
+}
+function stage(html){$('gameStage').innerHTML=`<div class="game-stage">${html}</div>`}
+function startGame(g){gameTimers.forEach(clearInterval);gameTimers.forEach(clearTimeout);gameTimers=[];({memory:gameMemory,sequence:gameSequence,reaction:gameReaction,words:gameWords,math:gameMath,pattern:gamePattern,peg:gamePegTest,walk:gameWalkTest})[g]()}
+function gameMemory(){let deck=[...EMOJIS,...EMOJIS].sort(()=>Math.random()-.5),open=[],matched=0,moves=0,lock=false;
+stage(`<h3 style="margin:0">🃏 Memory Match</h3><p style="color:var(--muted);font-size:12px;margin:0">Find all 8 pairs. Fewer moves = better memory.</p><div class="game-score" id="gScore">0 moves</div><div class="mem-grid">${deck.map((e,i)=>`<div class="mem-card" data-e="${e}" data-i="${i}" onclick="window._memFlip(this)">${e}</div>`).join('')}</div><button class="btn ghost small" onclick="startGame('memory')">Restart</button>`);
+window._memFlip=c=>{if(lock||c.classList.contains('flip'))return;c.classList.add('flip');open.push(c);if(open.length===2){moves++;$('gScore').textContent=moves+' moves';lock=true;setTimeout(()=>{if(open[0].dataset.e===open[1].dataset.e){open.forEach(x=>x.classList.add('matched'));matched++;if(matched===8){saveScore('memory',moves,false);stage(`<div style="font-size:44px">🎉</div><h3 style="margin:0">You found all pairs in ${moves} moves!</h3><p style="color:var(--muted);font-size:13px">Memory exercised. Play again or try another game.</p><button class="btn primary" onclick="startGame('memory')">Play again</button> <button class="btn ghost" onclick="go('games')">All games</button>`)}}else open.forEach(x=>x.classList.remove('flip'));open=[];lock=false},650)}}}
+function gameSequence(){let seq=[],idx=0,colors=['#f0692a','#5b8def','#2f8f6e','#9a6cc9'];
+stage(`<h3 style="margin:0">🎨 Color Sequence</h3><p style="color:var(--muted);font-size:12px;margin:0">Watch, then repeat. Each round adds one step.</p><div class="game-score" id="gScore">Round 0</div><div style="display:grid;grid-template-columns:repeat(2,82px);gap:12px">${colors.map((c,i)=>`<div class="seq-pad" id="pad${i}" style="background:${c};color:${c}" onclick="window._seqPick(${i})"></div>`).join('')}</div><button class="btn primary" id="seqBtn" onclick="window._seqStart()">Start</button>`);
+window._seqFlash=i=>{let p=$('pad'+i);p.classList.add('lit');setTimeout(()=>p.classList.remove('lit'),420)};
+window._seqStart=()=>{seq.push(Math.floor(Math.random()*4));idx=0;$('gScore').textContent='Round '+seq.length;$('seqBtn').style.display='none';seq.forEach((s,k)=>setTimeout(()=>window._seqFlash(s),600+k*650))};
+window._seqPick=i=>{window._seqFlash(i);if(i===seq[idx]){idx++;if(idx===seq.length)setTimeout(()=>window._seqStart(),900)}else{saveScore('sequence',seq.length-1);stage(`<div style="font-size:44px">🎨</div><h3 style="margin:0">You reached round ${seq.length}!</h3><p style="color:var(--muted);font-size:13px">Attention and working memory get a workout with every round.</p><button class="btn primary" onclick="startGame('sequence')">Play again</button> <button class="btn ghost" onclick="go('games')">All games</button>`)}}}
+function gameReaction(){let state='idle',t0;
+stage(`<h3 style="margin:0">⚡ Reaction Time</h3><p style="color:var(--muted);font-size:12px;margin:0">Tap the pad as soon as it turns green.</p><div class="reaction-pad" id="rxPad" style="background:#9a6cc4">Tap to start</div><div class="game-score" id="gScore"></div>`);
+$('rxPad').onclick=()=>{if(state==='idle'){state='wait';$('rxPad').style.background='#c7b6d6';$('rxPad').textContent='Wait for green…';$('gScore').textContent='';let d=1200+Math.random()*2800;gameTimers.push(setTimeout(()=>{state='go';t0=performance.now();$('rxPad').style.background='#2f8f6e';$('rxPad').textContent='TAP NOW!'},d))}else if(state==='wait'){gameTimers.forEach(clearTimeout);gameTimers=[];state='idle';$('rxPad').style.background='#c74b38';$('rxPad').textContent='Too soon! Tap to try again'}else if(state==='go'){let ms=Math.round(performance.now()-t0);state='idle';$('rxPad').style.background='#5b8def';$('rxPad').textContent='Tap to go again';$('gScore').textContent=ms+' ms';saveScore('reaction',ms,false)}}}
+function gameWords(){let pool=['sunset','window','garden','silver','bridge','pencil','harbor','mirror','blanket','meadow','lantern','cricket','thread','compass','melody','cushion','orchard','pebble','ribbon','marble','thunder','willow','anchor','sparkle','falcon','quilt'],words=pool.sort(()=>Math.random()-.5).slice(0,5);
+stage(`<h3 style="margin:0">📖 Word Recall</h3><p style="color:var(--muted);font-size:12px;margin:0">Study these 5 words — you have 12 seconds.</p><div>${words.map(w=>`<span class="word-chip">${w}</span>`).join('')}</div><div class="game-score" id="gTimer">12</div>`);
+let t=12;let iv=setInterval(()=>{t--;$('gTimer').textContent=t;if(t<=0){clearInterval(iv);stage(`<h3 style="margin:0">📖 Type every word you remember</h3><div class="field" style="width:100%;max-width:420px"><input id="wordGuess" placeholder="Type words separated by commas…" onkeydown="if(event.key==='Enter')window._wordsCheck()"></div><button class="btn primary" onclick="window._wordsCheck()">Check my recall</button>`)}},1000);gameTimers.push(iv);
+window._wordsCheck=()=>{let guess=($('wordGuess').value||'').toLowerCase().split(/[,\s]+/).filter(Boolean);let hits=words.filter(w=>guess.includes(w));saveScore('words',hits.length);stage(`<div style="font-size:44px">${hits.length>=4?'🌟':hits.length>=3?'😊':'🌱'}</div><h3 style="margin:0">You remembered ${hits.length} of 5 words</h3><p style="color:var(--muted);font-size:13px">The words were: ${words.join(', ')}.</p><button class="btn primary" onclick="startGame('words')">Play again</button> <button class="btn ghost" onclick="go('games')">All games</button>`)}}
+function gameMath(){let score=0,t=60,a,b,op;
+stage(`<h3 style="margin:0">🔢 Math Sprint</h3><p style="color:var(--muted);font-size:12px;margin:0">Solve as many as you can in 60 seconds.</p><div class="game-score" id="gTimer">60s</div><div class="math-q" id="mathQ"></div><div class="field" style="width:200px;margin:0"><input id="mathIn" type="number" inputmode="numeric" onkeydown="if(event.key==='Enter')window._mathGo()"></div><button class="btn primary" onclick="window._mathGo()">Next</button><div class="game-score" id="gScore">Score: 0</div>`);
+function next(){a=2+Math.floor(Math.random()*9);b=2+Math.floor(Math.random()*9);op=Math.random()<.5?'+':'×';let q=op==='+'?a+b:a*b;$('mathQ').textContent=`${a} ${op} ${b} = ?`;$('mathIn').value='';window._mathAns=q}
+window._mathGo=()=>{if(+$('mathIn').value===window._mathAns){score++}else if($('mathIn').value!==''){score=Math.max(0,score-1)}$('gScore').textContent='Score: '+score;next()};
+let iv=setInterval(()=>{t--;$('gTimer').textContent=t+'s';if(t<=0){clearInterval(iv);saveScore('math',score);stage(`<div style="font-size:44px">🏁</div><h3 style="margin:0">Time! Final score: ${score}</h3><p style="color:var(--muted);font-size:13px">Mental math is a great processing-speed workout.</p><button class="btn primary" onclick="startGame('math')">Play again</button> <button class="btn ghost" onclick="go('games')">All games</button>`)}},1000);gameTimers.push(iv);next()}
+const SHAPES = ['🔺', '🔵', '🟩', '🟨', '⭐', '🟧'];
+
+let patternQuestions = [];
+let patternIndex = 0;
+let patternCorrect = 0;
+let patternStreak = 0;
+let patternBestStreak = 0;
+let patternAnswered = false;
+
+function patternShuffle(items) {
+  return items.slice().sort(() => Math.random() - 0.5);
+}
+
+function patternOptions(answer, pool) {
+  const unique = [...new Set(pool.filter(x => x !== answer))];
+  const distractors = patternShuffle(unique).slice(0, 3);
+
+  while (distractors.length < 3) {
+    const extra = String(Number(answer) + distractors.length + 2);
+    if (extra !== answer && !distractors.includes(extra)) {
+      distractors.push(extra);
+    }
+  }
+
+  return patternShuffle([answer, ...distractors]);
+}
+
+function makePatternQuestion() {
+  const type = Math.floor(Math.random() * 6);
+
+  if (type === 0) {
+    const a = SHAPES[Math.floor(Math.random() * SHAPES.length)];
+    const b = SHAPES.filter(x => x !== a)[
+      Math.floor(Math.random() * (SHAPES.length - 1))
+    ];
+
+    return {
+      sequence: [a, b, a, b, a],
+      answer: b,
+      options: patternOptions(b, SHAPES),
+      explanation: `The shapes alternate: ${a}, ${b}, ${a}, ${b}, ${a}. So ${b} comes next.`
+    };
+  }
+
+  if (type === 1) {
+    const vals = patternShuffle(SHAPES).slice(0, 3);
+
+    return {
+      sequence: [vals[0], vals[1], vals[2], vals[0], vals[1]],
+      answer: vals[2],
+      options: patternOptions(vals[2], SHAPES),
+      explanation: `The pattern repeats every three shapes: ${vals.join(' ')}. So ${vals[2]} comes next.`
+    };
+  }
+
+  if (type === 2) {
+    const a = SHAPES[Math.floor(Math.random() * SHAPES.length)];
+    const b = SHAPES.filter(x => x !== a)[
+      Math.floor(Math.random() * (SHAPES.length - 1))
+    ];
+
+    return {
+      sequence: [a, a, b, a, a, b],
+      answer: a,
+      options: patternOptions(a, SHAPES),
+      explanation: `The pattern is two ${a} shapes, then one ${b}. It repeats, so ${a} comes next.`
+    };
+  }
+
+  if (type === 3) {
+    const first = 1 + Math.floor(Math.random() * 5);
+    const step = 2 + Math.floor(Math.random() * 4);
+    const sequence = [0, 1, 2, 3].map(i => String(first + i * step));
+    const answer = String(first + 4 * step);
+
+    return {
+      sequence,
+      answer,
+      options: patternOptions(answer, [
+        String(Number(answer) - step),
+        String(Number(answer) + step),
+        String(Number(answer) + 2 * step),
+        String(Number(answer) - 1),
+        String(Number(answer) + 1)
+      ]),
+      explanation: `The numbers increase by ${step} each time. The next number is ${answer}.`
+    };
+  }
+
+  if (type === 4) {
+    const first = 1 + Math.floor(Math.random() * 4);
+    const sequence = [
+      first,
+      first * 2,
+      first * 4,
+      first * 8
+    ].map(String);
+    const answer = String(first * 16);
+
+    return {
+      sequence,
+      answer,
+      options: patternOptions(answer, [
+        String(Number(answer) / 2),
+        String(Number(answer) + first),
+        String(Number(answer) + 2),
+        String(Number(answer) - first)
+      ]),
+      explanation: `Each number doubles: ${sequence.join(', ')}. The next number is ${answer}.`
+    };
+  }
+
+  const a = SHAPES[Math.floor(Math.random() * SHAPES.length)];
+  const b = SHAPES.filter(x => x !== a)[
+    Math.floor(Math.random() * (SHAPES.length - 1))
+  ];
+
+  const answer = b + b;
+  const options = patternShuffle([a, a + a, b, b + b, '⭐'])
+    .slice(0, 4);
+
+  if (!options.includes(answer)) {
+    options[0] = answer;
+  }
+
+  return {
+    sequence: [a, b + b, a, b + b, a],
+    answer,
+    options: patternShuffle([...new Set(options)]),
+    explanation: `The pattern alternates one ${a}, then two ${b} shapes. The next group is two ${b} shapes.`
+  };
+}
+
+function gamePattern() {
+  patternQuestions = Array.from(
+    { length: 10 },
+    () => makePatternQuestion()
+  );
+
+  patternIndex = 0;
+  patternCorrect = 0;
+  patternStreak = 0;
+  patternBestStreak = 0;
+
+  showPatternQuestion();
+}
+
+function showPatternQuestion() {
+  if (patternIndex >= patternQuestions.length) {
+    saveScore('pattern', patternCorrect);
+
+    stage(`
+      <h3>🧩 Round complete!</h3>
+      <div class="game-score">
+        ${patternCorrect} / 10
+      </div>
+      <p>
+        You answered ${patternCorrect} out of 10 correctly.
+        Best streak: ${patternBestStreak}.
+        These are practice puzzles, not a medical test.
+      </p>
+      <button class="btn primary" onclick="startGame('pattern')">
+        Play another round
+      </button>
+      <button class="btn ghost" onclick="go('games')">
+        All games
+      </button>
+    `);
+
+    return;
+  }
+
+  patternAnswered = false;
+  const q = patternQuestions[patternIndex];
+
+  stage(`
+    <h3>🔺 Pattern Play</h3>
+    <p style="color:var(--muted);font-size:12px">
+      Question ${patternIndex + 1} of 10 — find what comes next.
+    </p>
+
+    <div style="display:flex;justify-content:center;gap:10px;flex-wrap:wrap;font-size:30px;margin:16px 0">
+      ${q.sequence.map(item => `<span>${item}</span>`).join(' → ')}
+      <span>❓</span>
+    </div>
+
+    <div id="patternOptions" class="tagrow" style="justify-content:center;gap:9px">
+      ${q.options.map((opt, i) => `
+        <button class="tag" style="font-size:20px;min-width:58px;padding:10px"
+          onclick="answerPattern(${i})">${opt}</button>
+      `).join('')}
+    </div>
+
+    <div id="patternFeedback" style="min-height:48px;font-size:13px;color:var(--muted)"></div>
+
+    <div class="game-score" id="gScore">
+      Correct: ${patternCorrect} · Streak: ${patternStreak}
+    </div>
+
+    <button class="btn primary" id="patternNext"
+      style="display:none"
+      onclick="nextPatternQuestion()">Next question →</button>
+
+    <button class="btn ghost small" onclick="startGame('pattern')">
+      Restart round
+    </button>
+  `);
+}
+
+function answerPattern(optionIndex) {
+  if (patternAnswered) return;
+
+  patternAnswered = true;
+
+  const q = patternQuestions[patternIndex];
+  const picked = q.options[optionIndex];
+  const correct = picked === q.answer;
+
+  document.querySelectorAll('#patternOptions button').forEach((btn, i) => {
+    btn.disabled = true;
+
+    if (q.options[i] === q.answer) {
+      btn.style.borderColor = 'var(--green)';
+    }
+  });
+
+  if (correct) {
+    patternCorrect++;
+    patternStreak++;
+    patternBestStreak = Math.max(patternBestStreak, patternStreak);
+  } else {
+    patternStreak = 0;
+  }
+
+  document.getElementById('gScore').textContent =
+    `Correct: ${patternCorrect} · Streak: ${patternStreak}`;
+
+  document.getElementById('patternFeedback').innerHTML =
+    `<b>${correct ? 'Correct!' : 'Not quite.'}</b> ${q.explanation}`;
+
+  const next = document.getElementById('patternNext');
+  next.style.display = 'inline-flex';
+  next.textContent = patternIndex === 9
+    ? 'See results →'
+    : 'Next question →';
+}
+
+function nextPatternQuestion() {
+  patternIndex++;
+  showPatternQuestion();
+}
+function saveFunctionalTest(type,seconds,detail=''){
+ db.functionalTests=db.functionalTests||[];
+ db.functionalTests.push({id:Date.now()+Math.random(),type,seconds:Number(seconds.toFixed(2)),detail,date:new Date().toISOString()});
+ if(db.functionalTests.length>100)db.functionalTests=db.functionalTests.slice(-100);
+ db.games[type]=db.games[type]==null?Number(seconds.toFixed(2)):Math.min(db.games[type],Number(seconds.toFixed(2)));
+ localStorage.setItem(key,JSON.stringify(db));renderAll();toast('Timing saved on this device.');
+}
+function gamePegTest(){
+ let running=false,started=0,iv=null;
+ stage(`<h3 style="margin:0">🟠 Nine-Hole Peg Test</h3><p style="color:var(--muted);font-size:13px;max-width:540px">This clinical dexterity test uses a real board with nine holes and nine pegs. This timer cannot supply the equipment or ensure a standardized test. Follow your clinician's protocol; stop if you feel pain or unsafe.</p><div class="test-readout" id="testClock">0.00 s</div><p id="pegStatus" style="font-size:12px;color:var(--muted);margin:0">Set up the board and choose the hand/protocol recommended by your clinician.</p><div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center"><button class="btn primary" id="pegToggle">Start timing</button><button class="btn ghost" onclick="go('games')">Back to games</button></div><div class="notice" style="text-align:left;max-width:560px">The usual Nine-Hole Peg Test measures how long it takes to place and remove all nine pegs, typically assessed separately for each hand. Use your clinic's exact instructions and do not compare this informal timing with clinical norms.</div>`);
+ $('pegToggle').onclick=()=>{if(!running){running=true;started=performance.now();$('pegStatus').textContent='Timer running. Complete the task according to your clinician’s instructions.';$('pegToggle').textContent='Stop & save';iv=setInterval(()=>$('testClock').textContent=((performance.now()-started)/1000).toFixed(2)+' s',30);gameTimers.push(iv)}else{running=false;clearInterval(iv);let secs=(performance.now()-started)/1000;$('testClock').textContent=secs.toFixed(2)+' s';$('pegStatus').textContent='Timing saved locally as an informal result. Record the hand and protocol with your care team.';saveFunctionalTest('peg',secs,'Nine-Hole Peg Test timer; protocol/hand not recorded');$('pegToggle').disabled=true;$('pegToggle').textContent='Saved';}}
+}
+function gameWalkTest(){
+ let running=false,started=0,iv=null;
+ stage(`<h3 style="margin:0">🚶 Timed 25-Foot Walk</h3><p style="color:var(--muted);font-size:13px;max-width:540px">A clinical walking measure. Only attempt it if you can walk this distance safely, on a clear measured 25-foot (7.62 m) path, and in line with your clinician's instructions. Have your usual mobility aid and assistance as advised. Do not rush or attempt it if you feel unsteady.</p><div class="test-readout" id="testClock">0.00 s</div><p id="walkStatus" style="font-size:12px;color:var(--muted);margin:0">Prepare the measured path before starting.</p><div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center"><button class="btn primary" id="walkToggle">Start timing</button><button class="btn ghost" onclick="go('games')">Back to games</button></div><div class="notice" style="text-align:left;max-width:560px">This is a timer only, not a standardized clinical assessment. Follow your MS team's directions about start/finish points, assistive devices, repetitions, and recording results.</div>`);
+ $('walkToggle').onclick=()=>{if(!running){running=true;started=performance.now();$('walkStatus').textContent='Timer running. Walk at the pace instructed by your clinician; do not sprint.';$('walkToggle').textContent='Finish & save';iv=setInterval(()=>$('testClock').textContent=((performance.now()-started)/1000).toFixed(2)+' s',30)}else{running=false;clearInterval(iv);let secs=(performance.now()-started)/1000;$('testClock').textContent=secs.toFixed(2)+' s';$('walkStatus').textContent='Timing saved locally as an informal result.';saveFunctionalTest('walk',secs,'Timed 25-Foot Walk timer; protocol not verified');$('walkToggle').disabled=true;$('walkToggle').textContent='Saved';}}
+}
+
+$('heatMeter').innerHTML=[0,1,2,3,4].map(i=>`<button class="heat-seg ${i===0?'on':''}" data-v="${i}" onclick="pickHeat(this)">${i===0?'None':i*2+'+'}</button>`).join('');
+let heatVal=0;
+function pickHeat(el){document.querySelectorAll('.heat-seg').forEach(b=>b.classList.remove('on'));el.classList.add('on');heatVal=+el.dataset.v}
+function saveHeat(){if(!$('heatEffect').value)return toast('Choose how heat affected you first.');db.heat.push({id:Date.now(),date:today(),exposure:heatVal,effect:$('heatEffect').value,strategies:$('heatStrategies').value});saveDB();$('heatStrategies').value='';toast('Heat check-in saved.')}
+function renderHeat(){let h=[...db.heat].slice(-5).reverse();$('heatHistory').innerHTML=h.length?h.map(x=>`<div class="event"><div class="eventicon">🔥</div><div><b>${esc(x.date)}</b><small>Exposure ${x.exposure}/4 · ${esc(x.effect)}</small>${x.strategies?`<p style="font-size:12px;margin:4px 0;overflow-wrap:anywhere">${esc(x.strategies)}</p>`:''}</div><button class="action-link" title="Delete heat entry" onclick="deleteTrackedRecord('heat','${esc(String(x.id))}')">×</button></div>`).join(''):''}
+function logSite(el){let site=el.dataset.site;db.sites.push({id:Date.now()+Math.random(),site,date:today(),time:new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})});saveDB();toast(site+' logged as today\'s injection site.')}
+function renderSites(){let last={};db.sites.forEach(s=>last[s.site]=s.date);document.querySelectorAll('.site-dot').forEach(d=>{d.classList.toggle('used',!!last[d.dataset.site]);d.title=last[d.dataset.site]?('Last used '+last[d.dataset.site]):'Never used'});let mostRecent=db.sites[db.sites.length-1];document.querySelectorAll('.site-dot').forEach(d=>d.classList.toggle('last',mostRecent&&d.dataset.site===mostRecent.site));let counts={};db.sites.forEach(s=>counts[s.site]=(counts[s.site]||0)+1);let allSites=[...document.querySelectorAll('.site-dot')].map(d=>d.dataset.site);let suggestion=allSites.filter(s=>!last[s])[0]||allSites.sort((a,b)=>counts[a]-counts[b]||String(last[a]).localeCompare(String(last[b])))[0];$('siteSuggestion').innerHTML=mostRecent?`💡 Last used: <b>${mostRecent.site}</b> on ${mostRecent.date}. Consider <b>${suggestion}</b> next to spread sites out.`:'💡 Tap a site after each injection to build your rotation history.';$('siteHistory').innerHTML=db.sites.slice(-4).reverse().map(s=>`<div style="display:flex;justify-content:space-between;gap:8px;margin:4px 0"><span>• ${esc(s.date)} —${esc(s.site)}</span><button class="action-link" title="Delete injection site entry" onclick="deleteTrackedRecord('site', '${s.id}')">×</button></div>`).join('')}
+$('relapseForm').addEventListener('submit',e=>{e.preventDefault();const entry={id:Date.now(),date:$('relapseDate').value,symptoms:$('relapseSymptoms').value.trim(),duration:$('relapseDuration').value,change:$('relapseChange').value,trigger:$('relapseTrigger').value,notes:$('relapseNotes').value};db.relapses.push(entry);const explicit=entry.change!=='Not reported'?entry.change:null;const textSignal=hasPositiveUrgentPhrase(entry.symptoms+' '+entry.notes);$('relapseForm').reset();$('relapseDate').value=today();saveDB();toast('Flare record saved. If symptoms are new or worsening, contact your MS team.');if(explicit||textSignal){const reason=explicit||'Reported sudden or rapidly worsening symptoms';showUrgentAlert('neurological',`${entry.symptoms}. Change reported: ${reason}. Duration: ${entry.duration}.`);}});
+function deleteRelapse(id){db.relapses=db.relapses.filter(r=>r.id!==id);saveDB()}
+function renderRelapses(){$('relapseHistory').innerHTML=db.relapses.length?[...db.relapses].reverse().map(r=>`<div class="event"><div class="eventicon">🌊</div><div style="flex:1;min-width:0"><b>${esc(r.date)} · ${esc(r.symptoms)}</b><small>${esc(r.duration)} · Possible trigger: ${esc(r.trigger)}${r.change&&r.change!=='Not reported'?' · Change: '+esc(r.change):''}</small>${r.notes?`<p style="font-size:12px;margin:4px 0;overflow-wrap:anywhere">${esc(r.notes)}</p>`:''}</div><button class="action-link" onclick="deleteRelapse(${r.id})">Delete</button></div>`).join(''):''}
+$('visionForm').addEventListener('submit',e=>{e.preventDefault();const entry={id:Date.now(),date:$('visionDate').value,eye:$('visionEye').value,symptom:$('visionSymptom').value,severity:Math.max(0,Math.min(10,Number($('visionSeverity').value)||0)),trend:$('visionTrend').value,change:$('visionChange').value,onset:$('visionOnset').value,notes:$('visionNotes').value};db.visions.push(entry);const explicit=entry.change!=='Not reported'?entry.change:null;const textSignal=hasPositiveUrgentPhrase(entry.symptom+' '+entry.notes);const worsening=entry.trend==='Worsening'&&entry.severity>=7; $('visionForm').reset();$('visionDate').value=today();$('visionSeverity').value=3;saveDB();toast('Vision entry saved.');if(explicit||entry.symptom==='Vision loss'||textSignal||worsening){const reason=explicit||(entry.symptom==='Vision loss'?'Vision loss was recorded':textSignal?'Your notes mention a sudden or major change':'Vision symptoms rated '+entry.severity+'/10 and marked worsening');showUrgentAlert('vision',`${reason}. Eye: ${entry.eye}. Symptom: ${entry.symptom}. Severity: ${entry.severity}/10. Trend: ${entry.trend}.`);}});
+function deleteVision(id){db.visions=db.visions.filter(v=>v.id!==id);saveDB()}
+function renderVisions(){let v=[...db.visions].reverse().slice(0,5);$('visionHistory').innerHTML=v.length?v.map(x=>`<div class="event"><div class="eventicon">👁️</div><div style="flex:1;min-width:0"><b>${esc(x.date)} · ${esc(x.eye)} eye — ${esc(x.symptom)}</b><small>Severity ${x.severity??'not rated'}/10 · ${esc(x.trend||'Trend not recorded')}${x.change&&x.change!=='Not reported'?' · '+esc(x.change):''}${x.onset?' · Started '+esc(x.onset):''}</small>${x.notes?`<p style="font-size:12px;margin:4px 0;overflow-wrap:anywhere">${esc(x.notes)}</p>`:''}</div><button class="action-link" onclick="deleteVision(${x.id})">×</button></div>`).join(''):'<div class="empty">No vision entries yet.</div>'}
+document.querySelectorAll('#prepTags .tag').forEach(t=>t.addEventListener('click',()=>t.classList.toggle('active')));
+function buildPrep(){let picks=[...document.querySelectorAll('#prepTags .tag.active')].map(t=>t.dataset.p);if(!picks.length)return toast('Tick at least one item to include.');let s=db.settings||{},lines=[`APPOINTMENT PREP SHEET — ${s.name||'MSpace user'}`,`Generated: ${new Date().toLocaleString()}`,'',...picks.map(p=>{if(p==='questions list'&&db.questions.length)return '• My questions:\n'+db.questions.map(q=>'  - '+q.text).join('\n');let l=db.logs.slice(-3);if(p==='top 3 symptoms this month'&&l.length)return '• Top symptoms recently: '+l.map(x=>{let top=Object.entries(x.symptoms||{}).sort((a,b)=>b[1]-a[1])[0];return top&&top[1]>0?top[0]+' ('+top[1]+'/10)':null}).filter(x=>x).slice(0,3).join(', ');if(p==='recent flare details'&&db.relapses.length){let r=db.relapses[db.relapses.length-1];return `• Recent flare: ${r.date} — ${r.symptoms} (${r.duration}, change: ${r.change||'not recorded'}, trigger: ${r.trigger})`}if(p==='heat sensitivity notes'&&db.heat.length){let h=db.heat.slice(-3);return '• Heat notes: '+h.map(x=>x.date+' exposure '+x.exposure+'/4, '+x.effect).join('; ')}if(p==='vision diary summary'&&db.visions.length){let v=db.visions.slice(-3);return '• Vision: '+v.map(x=>x.date+' '+x.eye+' eye, '+x.symptom).join('; ')}if(p==='sleep and fatigue pattern'&&l.length){let avg=(k)=>l.reduce((a,x)=>a+x[k],0)/l.length;return `• Recent sleep/fatigue: avg energy ${avg('energy').toFixed(1)}/10, avg fatigue ${avg('fatigue').toFixed(1)}/10 over ${l.length} check-in(s)`}if(p==='mood check-in notes'&&db.moods.length){let m=db.moods.slice(-3);return '• Mood notes: '+m.map(x=>x.date+' — '+x.mood).join('; ')}if(p==='mobility changes'&&l.length)return '• Mobility notes: '+l.map(x=>x.date+': '+x.mobility).join('; ');if(p==='refill requests')return '• Refills needed: (write medication names here)';if(p==='medication side effects')return '• Medication side effects to discuss: (describe here)';return '• '+p+': (discuss at appointment)'}),'',`Clinician: ${s.doctorEmail||'(add email in Settings)'} · Emergency contact: ${s.contactName||'(not set)'}`];
+$('prepOutput').innerHTML=`<pre style="white-space:pre-wrap;overflow-wrap:anywhere;font:12px/1.7 inherit;background:var(--bg);border:1px solid var(--line);padding:16px;border-radius:12px">${esc(lines.join('\n'))}</pre><button class="btn ghost small" onclick="window.print()">Print sheet</button>`;toast('Prep sheet built — print it or copy it into your notes.')}
+$('paceEnergy').addEventListener('input',()=>{$('paceProgress').style.width=$('paceEnergy').value*10+'\%';$('paceMessage').textContent=+$('paceEnergy').value<=3?'Consider prioritizing essentials and asking for support if you need it.':+$('paceEnergy').value<=6?'Build in breaks and leave room for the unexpected.':'If you feel up to it, spread activities out and keep a little flexibility.'});
+function savePace(){db.pace.push({date:today(),energy:+$('paceEnergy').value});saveDB();toast('Energy check-in saved.')}$('taskForm').addEventListener('submit',e=>{e.preventDefault();db.tasks.push({id:Date.now(),title:$('paceTask').value.trim(),effort:$('paceEffort').value,when:$('paceWhen').value,done:false,date:today()});$('taskForm').reset();saveDB();toast('Added to your flexible plan.')});
+function togglePaceTask(id){let t=db.tasks.find(t=>t.id===id);if(t)t.done=!t.done;saveDB()}
+function removePaceTask(id){db.tasks=db.tasks.filter(t=>t.id!==id);saveDB()}
+function clearTasks(){if(confirm('Clear all activities from your flexible plan?')){db.tasks=[];saveDB()}}
+function renderPaceTasks(){$('paceTasks').innerHTML=db.tasks.length?[...db.tasks].sort((a,b)=>a.done-b.done).map(t=>`<div class="task"><button class="check ${t.done?'done':''}" onclick="togglePaceTask(${t.id})">${t.done?'✓':''}</button><div><b style="${t.done?'text-decoration:line-through;color:var(--muted)':''}">${esc(t.title)}</b><small>${esc(t.when)} · ${esc(t.effort)} effort</small></div><span class="pill ${t.effort==='Low'?'green':t.effort==='High'?'':'gray'}">${esc(t.effort)}</span><button class="action-link task-end" onclick="removePaceTask(${t.id})">×</button></div>`).join(''):'<div class="empty">Add an activity to start a flexible plan.</div>'}
+function renderTimelineSVG(id,items,opts={}){const svg=$(id);if(!svg)return;const W=600,H=190,L=44,R=14,T=16,B=34,PW=W-L-R,PH=H-T-B;const empty='<text x="300" y="95" text-anchor="middle" fill="var(--muted)" font-size="13">No entries in this date range yet</text>';if(!items||!items.length){svg.innerHTML=empty;return}const max=opts.max??Math.max(1,...items.map(x=>Number(x.value)||0));const min=opts.min??0;const span=Math.max(1,max-min);let out='';for(let i=0;i<=4;i++){const val=max-i*span/4,y=T+i*PH/4;out+=`<line x1="${L}" y1="${y}" x2="${W-R}" y2="${y}" stroke="var(--line)" stroke-dasharray="3 5"/><text x="${L-8}" y="${y+4}" text-anchor="end" fill="var(--muted)" font-size="10">${opts.format?opts.format(val):Math.round(val*10)/10}</text>`}const pts=items.map((x,i)=>({x:L+(items.length===1?PW/2:i*PW/(items.length-1)),y:T+PH-(Math.max(min,Math.min(max,Number(x.value)||0))-min)/span*PH,item:x}));if(opts.connect!==false&&pts.length>1)out+=`<polyline points="${pts.map(p=>p.x+','+p.y).join(' ')}" fill="none" stroke="${opts.color||'#f0692a'}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>`;pts.forEach(p=>{out+=`<circle cx="${p.x}" cy="${p.y}" r="4" fill="${opts.color||'#f0692a'}"><title>${esc(p.item.date)}: ${esc(p.item.label??p.item.value)}</title></circle>`});const stride=Math.max(1,Math.ceil(items.length/7));pts.forEach((p,i)=>{if(i%stride===0||i===pts.length-1)out+=`<text x="${p.x}" y="${H-10}" text-anchor="middle" fill="var(--muted)" font-size="9">${esc(String(p.item.date).slice(5))}</text>`});svg.innerHTML=out}
+function medicationAdherence(from,to,onlyId=null){let expected=0,taken=0;const meds=(db.meds||[]).filter(m=>onlyId==null||m.id===onlyId).filter(m=>!['As needed','Infusion / appointment','Custom — see notes'].includes(m.schedule));if(!from||!to||from==='0000-00-00'||to==='9999-99-99')return {taken:0,expected:0};const start=new Date(from+'T12:00:00'),end=new Date(to+'T12:00:00');if(!Number.isFinite(start.getTime())||!Number.isFinite(end.getTime())||end<start)return {taken:0,expected:0};const days=Math.min(3660,Math.floor((end-start)/86400000)+1);for(let i=0;i<days;i++){const d=new Date(start);d.setDate(d.getDate()+i);const ds=d.toLocaleDateString('en-CA');meds.forEach(m=>{let due=0;if(m.schedule==='Weekly')due=d.getDay()===Number(m.weekday??1)?1:0;else if(m.schedule==='Twice daily')due=2;else due=1;expected+=due;const records=Object.values(db.medChecks||{}).filter(c=>c.id===m.id&&c.date===ds&&c.status==='Taken');taken+=Math.min(due,records.length)})}return {taken,expected}}
+function renderGamePerformance(entries){const svg=$('gameChart');if(!svg)return;if(!entries.length){svg.innerHTML='<text x="300" y="95" text-anchor="middle" fill="var(--muted)" font-size="13">No game or test results in this date range yet</text>';return}const colors=['#8b6ed8','#f0692a','#3989bb','#2f8f6e','#c74b38','#b77a32','#d35b91'];const groups={};entries.sort((a,b)=>a.date.localeCompare(b.date)).forEach(e=>{(groups[e.group]||(groups[e.group]=[])).push(e)});Object.values(groups).forEach(arr=>{const base=Number(arr[0].raw);arr.forEach(e=>{e.value=base>0?(e.higherBetter?Number(e.raw)/base*100:base/Math.max(Number(e.raw),0.01)*100):100})});const all=entries.map(e=>e.value),max=Math.max(120,...all),min=0,W=600,H=190,L=44,R=14,T=16,B=34,PW=W-L-R,PH=H-T-B,dates=[...new Set(entries.map(e=>e.date))].sort(),xFor=d=>L+(dates.length===1?PW/2:dates.indexOf(d)*PW/(dates.length-1));let out='';for(let i=0;i<=4;i++){const val=max-i*max/4,y=T+i*PH/4;out+=`<line x1="${L}" y1="${y}" x2="${W-R}" y2="${y}" stroke="var(--line)" stroke-dasharray="3 5"/><text x="${L-8}" y="${y+4}" text-anchor="end" fill="var(--muted)" font-size="10">${Math.round(val)}%</text>`}out+=`<line x1="${L}" y1="${T+PH-(100/max)*PH}" x2="${W-R}" y2="${T+PH-(100/max)*PH}" stroke="var(--muted)" stroke-dasharray="4 4"/>`;Object.entries(groups).forEach(([name,arr],idx)=>{const color=colors[idx%colors.length],pts=arr.map(e=>({x:xFor(e.date),y:T+PH-(e.value/max)*PH,e}));if(pts.length>1)out+=`<polyline points="${pts.map(p=>p.x+','+p.y).join(' ')}" fill="none" stroke="${color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>`;pts.forEach(p=>out+=`<circle cx="${p.x}" cy="${p.y}" r="4" fill="${color}"><title>${esc(p.e.date)} · ${esc(name)}: ${esc(p.e.raw)} ${esc(p.e.unit||'')} · relative index ${Math.round(p.e.value)}% (baseline 100%)</title></circle>`)});dates.forEach((d,i)=>{if(i%Math.max(1,Math.ceil(dates.length/7))===0||i===dates.length-1)out+=`<text x="${xFor(d)}" y="${H-10}" text-anchor="middle" fill="var(--muted)" font-size="9">${esc(d.slice(5))}</text>`});svg.innerHTML=out;const legend=$('gameLegend');if(legend)legend.innerHTML=Object.keys(groups).map((name,i)=>`<span><i style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${colors[i%colors.length]};margin-right:4px"></i>${esc(name)}</span>`).join('')}
+function renderReportGraphs(from,to){const inRange=(date)=>String(date||'').slice(0,10)>=from&&String(date||'').slice(0,10)<=to;const logs=(db.logs||[]).filter(x=>inRange(x.date)).sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));const moods=(db.moods||[]).filter(x=>inRange(x.date)).sort((a,b)=>a.date.localeCompare(b.date));const visions=(db.visions||[]).filter(x=>inRange(x.date)).sort((a,b)=>a.date.localeCompare(b.date));const flares=(db.relapses||[]).filter(x=>inRange(x.date)).sort((a,b)=>a.date.localeCompare(b.date));const gh=(db.gameHistory||[]).filter(x=>inRange(x.date)).map(x=>({...x,date:String(x.date).slice(0,10),raw:Number(x.score),unit:x.unit,group:x.label||x.game,higherBetter:x.higherBetter!==false}));const ft=(db.functionalTests||[]).filter(x=>inRange(x.date)).map(x=>({...x,date:String(x.date).slice(0,10),group:x.type==='peg'?'Nine-Hole Peg Test':'Timed 25-Foot Walk',raw:Number(x.seconds),unit:'s',higherBetter:false}));
+const dayMap=new Map();let start=new Date((from&&from!=='0000-00-00'?from:to)+'T12:00:00');const end=new Date((to&&to!=='9999-99-99'?to:from)+'T12:00:00');if(from&&to&&from!=='0000-00-00'&&to!=='9999-99-99'&&end>=start){const totalDays=Math.floor((end-start)/86400000)+1;if(totalDays>366){start=new Date(end);start.setDate(start.getDate()-365)}const span=Math.min(366,Math.floor((end-start)/86400000)+1);for(let i=0;i<span;i++){const d=new Date(start);d.setDate(d.getDate()+i);const ds=d.toLocaleDateString('en-CA');dayMap.set(ds,{date:ds,value:0})}}flares.forEach(f=>{if(!dayMap.has(f.date))dayMap.set(f.date,{date:f.date,value:0});dayMap.get(f.date).value++});
+const meds=(db.meds||[]).filter(m=>m.schedule!=='As needed'&&m.schedule!=='Infusion / appointment'&&m.schedule!=='Custom — see notes');const medDaily=[];const dayKeys=[...new Set([...Object.values(db.medChecks||{}).filter(c=>inRange(c.date)).map(c=>c.date),...Array.from(dayMap.keys())])].sort();dayKeys.forEach(ds=>{let expected=0;meds.forEach(m=>{const dt=new Date(ds+'T12:00:00');if(m.schedule==='Weekly'){if(dt.getDay()===Number(m.weekday??1))expected+=1}else expected+=m.schedule==='Twice daily'?(medTimes(m).length||2):1});let checks=0;meds.forEach(m=>{const due=m.schedule==='Weekly'?(new Date(ds+'T12:00:00').getDay()===Number(m.weekday??1)?1:0):m.schedule==='Twice daily'?2:1;const n=Object.values(db.medChecks||{}).filter(c=>c.id===m.id&&c.date===ds&&c.status==='Taken').length;checks+=Math.min(due,n)});medDaily.push({date:ds,value:expected?Math.min(100,checks/expected*100):0,label:checks+' taken / '+expected+' scheduled'})});
+renderTimelineSVG('moodChart',moods.map(m=>({date:m.date,value:({'🌧 Low':1,'😟 Anxious':2,'😵 Overwhelmed':2,'🙂 Steady':3,'🌤 Hopeful':4}[m.mood]||3),label:m.mood})),{min:1,max:4,color:'#9a6cc9',format:v=>({1:'Low',2:'Mixed',3:'Steady',4:'Hopeful'}[Math.round(v)]||'Mood'),connect:false});renderTimelineSVG('visionChart',visions.map(v=>({date:v.date,value:Number(v.severity)||0,label:(v.eye+' eye: '+v.symptom+' '+v.severity+'/10')})),{min:0,max:10,color:'#3989bb'});renderTimelineSVG('flareChart',[...dayMap.values()].sort((a,b)=>a.date.localeCompare(b.date)).slice(-45),{min:0,max:Math.max(1,...[...dayMap.values()].map(x=>x.value)),color:'#c74b38'});renderGamePerformance([...gh,...ft]);renderTimelineSVG('medChart',medDaily,{min:0,max:100,color:'#2f8f6e',format:v=>Math.round(v)+'%'});
+const svg=$('reportChart');if(svg){if(!logs.length)svg.innerHTML='<text x="300" y="90" text-anchor="middle" fill="var(--muted)" font-size="13">No symptom check-ins in this date range yet</text>';else{const data=logs.slice(-30),W=600,H=190,L=44,R=14,T=16,B=34,PW=W-L-R,PH=H-T-B;let out='';for(let i=0;i<=5;i++){let y=T+i*PH/5;out+=`<line x1="${L}" y1="${y}" x2="${W-R}" y2="${y}" stroke="var(--line)" stroke-dasharray="3 5"/><text x="${L-8}" y="${y+4}" text-anchor="end" fill="var(--muted)" font-size="10">${10-i*2}</text>`}for(const [key,color] of [['energy','#f0692a'],['fatigue','#3989bb']]){const pts=data.map((d,i)=>({x:L+(data.length===1?PW/2:i*PW/(data.length-1)),y:T+PH-(Number(d[key]||0)/10)*PH,v:d[key]}));out+=`<polyline points="${pts.map(p=>p.x+','+p.y).join(' ')}" fill="none" stroke="${color}" stroke-width="3" stroke-linecap="round"/>`;pts.forEach((p,i)=>{if(p.v!=null)out+=`<circle cx="${p.x}" cy="${p.y}" r="3.5" fill="${color}"><title>${esc(data[i].date)} ${key}: ${p.v}/10</title></circle>`})}data.forEach((d,i)=>{if(i%Math.max(1,Math.ceil(data.length/7))===0||i===data.length-1)out+=`<text x="${L+(data.length===1?PW/2:i*PW/(data.length-1))}" y="${H-10}" text-anchor="middle" fill="var(--muted)" font-size="9">${esc(d.date.slice(5))}</text>`});svg.innerHTML=out}}drawChart('trendReportChart')}
+function buildReport(){let from=$('reportFrom').value||'0000-00-00',to=$('reportTo').value||'9999-99-99';let logs=db.logs.filter(l=>l.date>=from&&l.date<=to).sort((a,b)=>a.date.localeCompare(b.date));let events=db.events.filter(e=>e.date>=from&&e.date<=to).sort((a,b)=>a.date.localeCompare(b.date));let relapses=db.relapses.filter(r=>r.date>=from&&r.date<=to);let heat=db.heat.filter(h=>h.date>=from&&h.date<=to);let visions=db.visions.filter(v=>v.date>=from&&v.date<=to);let quickNotes=(db.notes||[]).filter(n=>n.date>=from&&n.date<=to).sort((a,b)=>a.date.localeCompare(b.date));
+let avg=k=>logs.length?(logs.reduce((s,l)=>s+l[k],0)/logs.length).toFixed(1):'Not enough data';
+let lines=[`MSPACE — PERSONAL HEALTH SUMMARY`,`Date range: ${from} to ${to}`,`Generated: ${new Date().toLocaleString()}`,'',`SYMPTOM CHECK-INS: ${logs.length}`,`Average logged energy (1–10): ${avg('energy')}`,`Average logged fatigue (1–10): ${avg('fatigue')}`,'','CHECK-INS'];
+logs.forEach(l=>{let sy=Object.entries(l.symptoms||{}).filter(([k,v])=>v>0).map(([k,v])=>k+' '+v+'/10').join(', ');lines.push(`• ${l.date} ${l.time}: Energy ${l.energy}/10; fatigue ${l.fatigue}/10; mood ${l.mood}; context ${l.context}; mobility ${l.mobility}. ${sy?'Symptoms: '+sy+'. ':''}${l.notes||''}`)});
+lines.push('','CALENDAR EVENTS');events.forEach(e=>lines.push(`• ${e.date} ${e.time||''} ${e.type}: ${e.title}. ${e.details||''}`));
+lines.push('','FLARE / RELAPSE RECORDS');if(relapses.length)relapses.forEach(r=>lines.push(`• ${r.date}: ${r.symptoms} — ${r.duration}; reported change ${r.change||'not recorded'}; possible trigger ${r.trigger}. ${r.notes||''}`));else lines.push('• No flare records in this date range.')
+lines.push('','HEAT SENSITIVITY');if(heat.length)heat.forEach(h=>lines.push(`• ${h.date}: exposure ${h.exposure}/4; effect: ${h.effect}. ${h.strategies?'Strategies: '+h.strategies:''}`));else lines.push('• No heat-sensitivity entries in this date range.')
+lines.push('','VISION ENTRIES');if(visions.length)visions.forEach(v=>lines.push(`• ${v.date}: ${v.eye} eye — ${v.symptom}; severity ${v.severity??'not rated'}/10; trend ${v.trend||'not recorded'}; reported change ${v.change||'not recorded'}; onset ${v.onset||'not recorded'}. ${v.notes||''}`));else lines.push('• No vision entries in this date range.')
+lines.push('','QUICK NOTES');if(quickNotes.length)quickNotes.forEach(n=>lines.push(`• ${n.date}${n.time?' '+n.time:''}: ${n.text||''}`));else lines.push('• No quick notes in this date range.')
+const gh=(db.gameHistory||[]).filter(x=>x.date.slice(0,10)>=from&&x.date.slice(0,10)<=to);
+const ft=(db.functionalTests||[]).filter(x=>x.date.slice(0,10)>=from&&x.date.slice(0,10)<=to);
+lines.push('','BRAIN GAME & FUNCTIONAL TEST HISTORY');if(gh.length||ft.length){gh.slice().sort((a,b)=>a.date.localeCompare(b.date)).forEach(x=>lines.push(`• ${x.date.slice(0,10)} ${x.label}: ${x.score} ${x.unit}`));ft.slice().sort((a,b)=>a.date.localeCompare(b.date)).forEach(x=>lines.push(`• ${x.date.slice(0,10)} ${x.type==='peg'?'Nine-Hole Peg Test':'Timed 25-Foot Walk'}: ${x.seconds}s. ${x.detail||''}`));}else lines.push('• No brain-game or functional-test results in this date range.');
+const moods=(db.moods||[]).filter(m=>m.date>=from&&m.date<=to).sort((a,b)=>a.date.localeCompare(b.date));
+const medsTaken=Object.values(db.medChecks||{}).filter(c=>c.date>=from&&c.date<=to);
+const gamesInRange=[...(db.gameHistory||[]).filter(x=>String(x.date).slice(0,10)>=from&&String(x.date).slice(0,10)<=to),...(db.functionalTests||[]).filter(x=>String(x.date).slice(0,10)>=from&&String(x.date).slice(0,10)<=to)];
+lines.push('','MOOD HISTORY');if(moods.length)moods.forEach(m=>lines.push(`• ${m.date}: ${m.mood}${m.note?'; note: '+m.note:''}`));else lines.push('• No mood entries in this date range.');
+lines.push('','MEDICATIONS & ADHERENCE');if(db.meds.length){db.meds.forEach(m=>{const records=medsTaken.filter(c=>c.id===m.id);const a=medicationAdherence(from,to,m.id);lines.push(`• ${m.name} (${m.dose||'dose as prescribed'}; ${m.schedule}; reminders ${medTimes(m).join(' / ')||'not scheduled'}): ${['As needed','Infusion / appointment','Custom — see notes'].includes(m.schedule)?records.filter(c=>c.status==='Taken').length+' marked taken / '+records.length+' recorded check-ins':a.taken+' marked taken out of '+a.expected+' scheduled doses in range'}.`)});const allAdherence=medicationAdherence(from,to);lines.push(`• All scheduled medicines combined: ${allAdherence.taken} marked taken out of ${allAdherence.expected} expected scheduled doses in range. This is based on user-entered check-ins, not proof of ingestion; missed entries may make adherence look lower.`);if(medsTaken.length)lines.push(`• Additional recorded medication check-ins (including skipped/unscheduled): ${medsTaken.length}.`)}else lines.push('• No medications added.');
+if(gamesInRange.length){lines.push('','GAME & FUNCTIONAL PERFORMANCE TREND DATA');gamesInRange.sort((a,b)=>String(a.date).localeCompare(String(b.date))).forEach(g=>lines.push(`• ${String(g.date).slice(0,10)}: ${g.label|| (g.type==='peg'?'Nine-Hole Peg Test':g.type==='walk'?'Timed 25-Foot Walk':g.game)} — ${g.score??g.seconds} ${g.unit||(g.seconds!=null?'seconds':'score')}`))}
+const allSymptomKeys=[...new Set(logs.flatMap(l=>Object.keys(l.symptoms||{})))];
+if(logs.length>=2){lines.push('','RECENT SYMPTOM TREND (first vs latest in selected range)');for(const k of ['energy','fatigue',...allSymptomKeys]){const vals=logs.filter(l=>l[k]!=null||(l.symptoms&&l.symptoms[k]!=null)).map(l=>({date:l.date,val:k==='energy'?l.energy:k==='fatigue'?l.fatigue:l.symptoms[k]}));if(vals.length>=2){const first=vals[0],last=vals[vals.length-1];lines.push(`• ${k}: ${first.val}/10 on ${first.date} → ${last.val}/10 on ${last.date}. This is a simple comparison, not a diagnosis.`)}}}
+lines.push('','IMPORTANT: This is a user-entered summary, may be incomplete, and is not medical advice or a medical record. Please verify before sharing.');
+reportText=lines.join('\n');$('reportOutput').innerHTML=`<div class="notice">Summary generated for ${logs.length} check-in(s), ${events.length} event(s), ${relapses.length} flare record(s), ${visions.length} vision entr${visions.length===1?'y':'ies'}, ${moods.length} mood entr${moods.length===1?'y':'ies'}, ${quickNotes.length} quick note(s), and ${medsTaken.length} medication check-in(s). The graphs above are part of the report and will appear in Print / Save PDF.</div><pre style="white-space:pre-wrap;overflow-wrap:anywhere;font:12px/1.7 inherit;background:var(--bg);border:1px solid var(--line);padding:16px;border-radius:12px">${esc(reportText)}</pre>`;renderReportGraphs(from,to);drawChart('trendReportChart')}
+function downloadReport(){if(!reportText)buildReport();downloadBlob('mspace-health-summary.txt',reportText,'text/plain');toast('Report downloaded.')}
+function downloadCSV(){let rows=[['date','time','energy','fatigue','mood','sleep','context','mobility','notes']];[...db.logs].sort((a,b)=>a.date.localeCompare(b.date)).forEach(l=>rows.push([l.date,l.time,l.energy,l.fatigue,l.mood,l.sleep,l.context,l.mobility,(l.notes||'').replace(/[\n,]/g,' ')]));downloadBlob('mspace-checkins.csv',rows.map(r=>r.join(',')).join('\n'),'text/csv');toast('CSV downloaded — opens in Excel or Sheets.')}
+function downloadBlob(name,data,type){let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([data],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+
+function fillDoctorSummary(){
+let logs=[...db.logs].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,5);let summary=logs.length?logs.map(l=>`${l.date} (${l.time}): energy ${l.energy}/10, fatigue ${l.fatigue}/10, mood ${l.mood}, context ${l.context}${l.notes?'; notes: '+l.notes:''}`).join('\n'):'No symptom check-ins have been logged yet.';let vision=db.visions.length?'\n\nRecent vision changes:\n'+db.visions.slice(-5).reverse().map(v=>`${v.date}: ${v.eye} eye — ${v.symptom}; severity ${v.severity??'not rated'}/10; trend ${v.trend||'not recorded'}; reported change ${v.change||'not recorded'}; onset ${v.onset||'not recorded'}${v.notes?'; notes: '+v.notes:''}`).join('\n'):'\n\nNo vision entries logged.';let gameRows=(db.gameHistory||[]).slice(-8).reverse().map(x=>`${x.date.slice(0,10)}: ${x.label} — ${x.score} ${x.unit}`).join('\n');let testRows=(db.functionalTests||[]).slice(-8).reverse().map(x=>`${x.date.slice(0,10)}: ${x.type==='peg'?'Nine-Hole Peg Test':'Timed 25-Foot Walk'} — ${x.seconds}s`).join('\n');let performance='\n\nRecent game results:\n'+(gameRows||'No brain-game sessions logged.')+'\n\nRecent timed tests:\n'+(testRows||'No timed-test results logged.');let rel=db.relapses.length?`\n\nMost recent flare record:\n${db.relapses[db.relapses.length-1].date}: ${db.relapses[db.relapses.length-1].symptoms} — ${db.relapses[db.relapses.length-1].duration}, trigger: ${db.relapses[db.relapses.length-1].trigger}`:'';$('doctorMessage').value=`Hello${$('doctorName').value.trim()?' '+$('doctorName').value.trim():''},\n\nI would like to discuss: ${$('doctorTopic').value}.\n\nRecent self-reported check-ins:\n${summary}${vision}${performance}${rel}\n\nMy questions/concerns:\n\nThank you,`;toast('Recent log summary inserted. Please review it.')}
+
+$('doctorForm').addEventListener('submit',e=>{e.preventDefault();let email=$('doctorEmail').value.trim()||$('savedDoctorEmail').value.trim();if(!email){toast('Add your clinician email first.');$('doctorEmail').focus();return}let subject=$('doctorSubject').value||'MS symptom update';let body=$('doctorMessage').value||`Hello${$('doctorName').value?' '+$('doctorName').value:''},\n\nI would like to discuss ${$('doctorTopic').value.toLowerCase()} with you.\n\nThank you.`;window.location.href=`mailto:${encodeURIComponent(email)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;toast('Your email app should open with a draft. Check it before sending.')});
+$('questionForm').addEventListener('submit',e=>{e.preventDefault();db.questions.push({id:Date.now(),text:$('questionText').value.trim(),done:false});$('questionText').value='';saveDB();toast('Question saved.')});
+function renderQuestions(){$('questionList').innerHTML=db.questions.length?db.questions.map(q=>`<div class="task"><button class="check ${q.done?'done':''}" onclick="toggleQuestion(${q.id})">${q.done?'✓':''}</button><div style="flex:1"><b style="${q.done?'text-decoration:line-through;color:var(--muted)':''}">${esc(q.text)}</b></div><button class="action-link" onclick="deleteQuestion(${q.id})">×</button></div>`).join(''):'<div class="empty">Questions you save appear here.</div>'}
+function toggleQuestion(id){let q=db.questions.find(q=>q.id===id);if(q)q.done=!q.done;saveDB()}
+function deleteQuestion(id){db.questions=db.questions.filter(q=>q.id!==id);saveDB()}
+let breathingPaused=false;function toggleBreath(){breathingPaused=!breathingPaused;$('breathOrb').style.animationPlayState=breathingPaused?'paused':'running';$('breathButton').textContent=breathingPaused?'Resume animation':'Pause animation'}
+function selectMood(el){document.querySelectorAll('#moodTags .tag').forEach(t=>t.classList.remove('active'));el.classList.add('active');chosenMood=el.textContent}
+function saveMood(){if(!chosenMood)return toast('Choose a mood first.');db.moods.push({id:Date.now(),date:today(),mood:chosenMood,note:$('moodNote').value.trim()});$('moodNote').value='';saveDB();toast('Mood note saved privately on this device.')}
+function renderMoodHistory(){const el=$('moodHistory');if(!el)return;const items=[...(db.moods||[])].sort((a,b)=>b.date.localeCompare(a.date)||(b.id||0)-(a.id||0));el.className=items.length?'':'empty';el.innerHTML=items.length?items.slice(0,8).map(m=>`<div class="event"><div class="eventicon">${esc(m.mood.split(' ')[0]||'🙂')}</div><div style="flex:1;min-width:0"><b>${esc(m.date)} · ${esc(m.mood)}</b>${m.note?`<small>${esc(m.note)}</small>`:''}</div><button class="action-link" title="Delete mood entry" onclick="deleteTrackedRecord('mood','${esc(String(m.id))}')">×</button></div>`).join(''):'Your saved mood notes will appear here.'}
+function saveWin(){let t=$('winText').value.trim();if(!t)return toast('Add a small win first.');db.wins.push({id:Date.now()+Math.random(),date:today(),text:t});$('winText').value='';saveDB();toast('Your win has been saved.')}
+function renderWins(){$('winHistory').innerHTML=db.wins.slice(-3).reverse().map(w=>`<div style="display:flex;justify-content:space-between;gap:8px;align-items:start"><p>✨ <b>${esc(w.date)}</b> — ${esc(w.text)}</p><button class="action-link" title="Delete personal win" onclick="deleteTrackedRecord('win','${esc(String(w.id))}')">×</button></div>`).join('')}
+$('settingsForm').addEventListener('submit',e=>{e.preventDefault();db.settings={...db.settings,name:$('userName').value.trim(),doctorEmail:$('savedDoctorEmail').value.trim(),contactName:$('contactName').value.trim(),contactPhone:$('contactPhone').value.trim(),theme:$('themeSetting').value,textSize:$('textSize').value,motion:$('motionSetting').value};saveDB();applySettings();toast('Preferences saved on this device.')});
+function applySettings(){let s=db.settings||{};$('userName').value=s.name||'';$('savedDoctorEmail').value=s.doctorEmail||'';$('contactName').value=s.contactName||'';$('contactPhone').value=s.contactPhone||'';$('themeSetting').value=s.theme||'light';$('textSize').value=s.textSize||'normal';$('motionSetting').value=s.motion||'normal';document.body.style.fontSize=s.textSize==='large'?'17px':'15px';applyTheme(s.theme||'light');document.body.classList.toggle('reduced-motion',s.motion==='reduced');if(s.motion==='reduced')document.querySelectorAll('*').forEach(el=>el.style.animationDuration='.01ms');else document.querySelectorAll('*').forEach(el=>el.style.animationDuration='')}
+function exportData(){downloadBlob('mspace-backup.json',JSON.stringify(db,null,2),'application/json');toast('Data export created. Keep it somewhere private.')}
+function importData(e){let file=e.target.files[0];if(!file)return;let r=new FileReader();r.onload=()=>{try{let x=JSON.parse(r.result);if(!x||!Array.isArray(x.logs)||!Array.isArray(x.events))throw Error();db={...structuredClone(defaults),...x};saveDB();applySettings();toast('Backup imported.')}catch(err){toast('Could not import: file format not recognized.')}};r.readAsText(file);e.target.value=''}
+function clearAllData(){if(confirm('Permanently delete all MSpace data saved in this browser? Export a backup first if you may need it.')){localStorage.removeItem(key);db=structuredClone(defaults);saveDB();applySettings();toast('Local app data deleted.')}}
+function hasPositiveUrgentPhrase(value){
+ const text=String(value||'').toLowerCase();
+ const phrases=[/sudden(?:ly)?\s+(?:vision\s+)?loss of vision/,/sudden vision loss/,/rapidly worsening/,/rapid deterioration/,/major new (?:vision |neurological )?change/,/severe new symptoms?/,/sudden(?:ly)?\s+(?:new |onset of |worsening )?(?:weakness|numbness|tingling|vision changes?|symptoms?)/,/new weakness/,/cannot walk/,/can't walk/,/loss of vision/];
+ return phrases.some(re=>{const m=re.exec(text);if(!m)return false;const before=text.slice(Math.max(0,m.index-18),m.index);return !/(?:no|not|denies|without)\s+(?:any\s+)?$/.test(before)});
+}
+function getRapidSymptomChange(current,prior){
+ const explicit=hasPositiveUrgentPhrase(current.notes);
+ if(explicit)return `Your notes report a sudden or major change: “${current.notes.trim().slice(0,240)}”`;
+ if(!prior||!prior.symptoms||current.date!==today())return null;
+ const days=Math.abs((Date.parse(current.date+'T12:00:00Z')-Date.parse((prior.date||'')+'T12:00:00Z'))/86400000);
+ if(!Number.isFinite(days)||days>7)return null;
+ const candidates=[];
+ for(const name of symptomNames){const before=Number(prior.symptoms[name]||0),now=Number(current.symptoms[name]||0);if(now-before>=4&&now>=7)candidates.push({name,before,now,delta:now-before})}
+ candidates.sort((a,b)=>b.delta-a.delta);
+ if(!candidates.length)return null;
+ return candidates.slice(0,3).map(x=>`${x.name} increased from ${x.before}/10 to ${x.now}/10 since your previous check-in`).join('; ')+'. This is a change in your recorded ratings, not a diagnosis.';
+}
+function showUrgentAlert(kind,detail){
+ const overlay=$('urgentAlert');if(!overlay)return;
+ $('urgentTitle').textContent=kind==='vision'?'Urgent assessment for a vision change':'Urgent assessment for a new or worsening symptom';
+ $('urgentMessage').textContent=kind==='vision'?'Sudden vision loss, a major new vision change, or rapidly worsening vision needs urgent medical assessment. Please do not wait for your next appointment.':'A sudden or rapidly worsening neurological symptom, or a major new change, needs urgent medical assessment. Please do not wait for your next appointment.';
+ $('urgentDetail').textContent='What triggered this caution: '+String(detail||'A sudden or rapidly worsening change was reported.');
+ overlay.classList.add('open');
+ const dismiss=overlay.querySelector('.urgent-link');if(dismiss)dismiss.focus();
+}
+function dismissUrgentAlert(){$('urgentAlert').classList.remove('open')}
+function urgentOpenDoctor(){dismissUrgentAlert();go('doctor');if($('doctorTopic'))$('doctorTopic').value='Urgent symptom change';if($('doctorMessage'))$('doctorMessage').focus()}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('urgentAlert').classList.contains('open'))dismissUrgentAlert()});
+
+
+function trendLabel(values, lowerIsBetter=false){
+ if(values.length<2)return 'Not enough comparable entries yet.';
+ const a=values[0],b=values[values.length-1],delta=Number((a-b).toFixed(2));
+ if(Math.abs(delta)<0.01)return 'No change between the first and latest values shown.';
+ const improving=lowerIsBetter?delta>0:delta<0;
+ return (improving?'Improved':'Worsened')+' by '+Math.abs(delta)+' from first to latest entry in this selected history. This is a personal trend, not a diagnosis.';
+}
+function renderGameHistory(){
+ const arr=(db.gameHistory||[]).slice().sort((a,b)=>b.date.localeCompare(a.date));
+ let migrated=false;(db.functionalTests||[]).forEach(t=>{if(t.id==null){t.id=Date.now()+Math.random();migrated=true}});if(migrated)localStorage.setItem(key,JSON.stringify(db));
+ const tests=(db.functionalTests||[]).map(t=>({id:t.id,game:t.type,label:t.type==='peg'?'Nine-Hole Peg Test':'Timed 25-Foot Walk',score:t.seconds,unit:'seconds',date:t.date,higherBetter:false,detail:t.detail,recordType:'test'}));
+ const all=[...arr.map(x=>({...x,recordType:'game'})),...tests].sort((a,b)=>b.date.localeCompare(a.date));
+ const count=$('gameHistoryCount');if(!count)return;count.textContent=all.length+' sessions';
+ const summary=$('gameTrendSummary'),history=$('gameHistory');
+ if(!all.length){summary.textContent='Complete a game or test to start building your personal history.';history.className='empty';history.textContent='No completed sessions saved yet.';return}
+ const latestBy={};all.forEach(x=>{if(!latestBy[x.game])latestBy[x.game]=[];latestBy[x.game].push(x)});
+ const notes=Object.entries(latestBy).map(([g,items])=>{if(items.length<2)return null;const older=items[1],newer=items[0],lower=!!newer.higherBetter===false;const delta=Number((newer.score-older.score).toFixed(2));let dir=delta===0?'unchanged':((lower?delta<0:delta>0)?'better result':'different / lower result');return `${newer.label}: ${dir} vs previous session (${older.score} ${older.unit} → ${newer.score} ${newer.unit}).`}).filter(Boolean);
+ summary.textContent=notes.length?notes.join(' '):'More than one session of the same activity is needed before MSpace can compare performance. Results can vary with fatigue, practice, and testing conditions.';
+ history.className='';history.innerHTML=all.slice(0,100).map(x=>`<div class="event"><div class="eventicon">${x.game==='walk'?'🚶':x.game==='peg'?'🟠':'🧠'}</div><div style="flex:1;min-width:0"><b>${esc(x.label||x.game)}</b><small>${esc(new Date(x.date).toLocaleString())}</small><div style="font-size:13px;margin-top:3px">${esc(x.score)} ${esc(x.unit||'score')}${x.detail?' · '+esc(x.detail):''}</div></div><button class="action-link" title="Delete this result" onclick="deleteGameRecord('${x.recordType}','${esc(String(x.id))}')">Delete</button></div>`).join('');
+}
+function deleteGameRecord(type,id){if(!confirm('Delete this game/test result from your history and reports?'))return;if(type==='test')db.functionalTests=db.functionalTests.filter(x=>String(x.id)!==String(id));else db.gameHistory=db.gameHistory.filter(x=>String(x.id)!==String(id));saveDB();toast('Game/test result deleted.')}
+function clearGameHistory(){if(!confirm('Delete all saved game history and timed-test results? Your personal-best scores will remain. This cannot be undone.'))return;db.gameHistory=[];db.functionalTests=[];saveDB();toast('Game and test history cleared. Personal bests were kept.')}
+
+function renderAll(){renderDashboard();renderQuickNotes();renderSymptomHistory();renderCalendar();renderMeds();renderMoodHistory();renderPaceTasks();renderQuestions();renderWins();renderHeat();renderSites();renderRelapses();renderVisions();renderBestScores();renderGameHistory();notifLabel();if($('reportOutput').innerHTML)buildReport()}
+function init(){let migratedIds=false;[['functionalTests',db.functionalTests],['heat',db.heat],['sites',db.sites],['wins',db.wins]].forEach(([name,arr])=>(arr||[]).forEach(x=>{if(x.id==null){x.id=Date.now()+Math.random();migratedIds=true}}));if(migratedIds)localStorage.setItem(key,JSON.stringify(db));applySettings();const recordedDates=[...(db.logs||[]).map(x=>x.date),...(db.moods||[]).map(x=>x.date),...(db.visions||[]).map(x=>x.date),...(db.relapses||[]).map(x=>x.date),...(db.heat||[]).map(x=>x.date),...(db.events||[]).map(x=>x.date),...(db.gameHistory||[]).map(x=>String(x.date).slice(0,10)),...(db.functionalTests||[]).map(x=>String(x.date).slice(0,10)),...Object.values(db.medChecks||{}).map(x=>x.date)].filter(Boolean).sort();if(recordedDates.length)$('reportFrom').value=recordedDates[0];$('reportTo').value=today();renderAll();renderReportGraphs($('reportFrom').value||'0000-00-00',$('reportTo').value||'9999-99-99');checkReminders()}
+init();
+
+
+
+
+</script>
+<script>
+(function(){if(!window.chatbase||window.chatbase("getState")!=="initialized"){window.chatbase=(...arguments)=>{if(!window.chatbase.q){window.chatbase.q=[]}window.chatbase.q.push(arguments)};window.chatbase=new Proxy(window.chatbase,{get(target,prop){if(prop==="q"){return target.q}return(...args)=>target(prop,...args)}})}const onLoad=function(){const script=document.createElement("script");script.src="https://www.chatbase.co/embed.min.js";script.id="Y2RqdIfOsAXLGhsOAPj0B";script.domain="www.chatbase.co";document.body.appendChild(script)};if(document.readyState==="complete"){onLoad()}else{window.addEventListener("load",onLoad)}})();
+</script>
+</body></html>
